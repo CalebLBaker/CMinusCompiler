@@ -66,25 +66,27 @@ public class CMinusParser {
 		return null;
 	}
 
-	private Expression parseExpression() throws InvalidTokenException, IOException, UnexpectedEOFException {
-		Token nextToken = lex.getNextToken();
+	private Expression parseExpression() throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+		Token nextToken = lex.viewNextToken();
 		Token.TokenType type = nextToken.getTokenType();
 		switch(type) {
 			case IDENTIFIER : {
+				lex.getNextToken();
 				return parseExpressionPrime((String) nextToken.getTokenData());
 			}
 			case NUMBER : {
-
+				lex.getNextToken();
+				NumExpression n = new NumExpression((int) nextToken.getTokenData());
+				return parseSimpleExpressionPrime(n);
 			}
 			case LEFT_PAREN : {
-
+				Expression f = parseFactor();
+				return parseSimpleExpressionPrime(f);
 			}
 			default : {
-
+				throw new ParseException();
 			}
 		}
-
-		return null;
 	}
 
 	private Expression parseExpressionPrime(String id) {
@@ -95,7 +97,7 @@ public class CMinusParser {
 		return null;
 	}
 
-	private Expression parseSimpleExpressionPrime() {
+	private Expression parseSimpleExpressionPrime(Expression leadFactor) {
 		return null;
 	}
 
