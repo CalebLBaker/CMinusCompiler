@@ -20,10 +20,17 @@ public class CMinusParser {
 	private boolean isBinaryOp() {
 		Token.TokenType t = lex.viewNextToken().getTokenType();
 		return t == Token.TokenType.LESS_THAN || t == Token.TokenType.LESS_THAN_EQUAL_TO
-					|| t == Token.TokenType.GREATER_THAN || t == Token.TokenType.GREATER_THAN_EQUAL_TO
-					|| t == Token.TokenType.EQUALITY || t == Token.TokenType.NOT_EQUAL
-					|| t == Token.TokenType.ADDITION || t == Token.TokenType.SUBTRACTION
-					|| t == Token.TokenType.MULTIPLICATION || t == Token.TokenType.DIVISION;
+				|| t == Token.TokenType.GREATER_THAN || t == Token.TokenType.GREATER_THAN_EQUAL_TO
+				|| t == Token.TokenType.EQUALITY || t == Token.TokenType.NOT_EQUAL
+				|| t == Token.TokenType.ADDITION || t == Token.TokenType.SUBTRACTION
+				|| t == Token.TokenType.MULTIPLICATION || t == Token.TokenType.DIVISION;
+	}
+
+	private boolean isFactorFollowSet() {
+		Token.TokenType t = lex.viewNextToken().getTokenType();
+		return isBinaryOp() || t == Token.TokenType.SEMI_COLON
+				|| t == Token.TokenType.COMMA || t == Token.TokenType.RIGHT_BRACKET
+				|| t == Token.TokenType.RIGHT_PAREN;
 	}
 
 	private Program parseProgram() {
@@ -129,8 +136,7 @@ public class CMinusParser {
 			CallExpression call = new CallExpression(id, a);
 			return parseSimpleExpressionPrime(call);
 		}
-		else if (isBinaryOp() || type == Token.TokenType.SEMI_COLON || type == Token.TokenType.COMMA
-					|| type == Token.TokenType.RIGHT_BRACKET || type == Token.TokenType.RIGHT_PAREN) {
+		else if (isFactorFollowSet()) {
 			VarExpression firtFactor = new VarExpression(id);
 			return parseSimpleExpressionPrime(firtFactor);
 		}
@@ -140,7 +146,18 @@ public class CMinusParser {
 	}
 
 	private Expression parseExpressionPrimePrime(VarExpression x) {
-		return null;
+		Token nextToken = lex.viewNextToken();
+		if (nextToken.getTokenType() == Token.TokenType.ASSIGNMENT) {
+			match(Token.TokenType.ASSIGNMENT);
+			Expression value = parseExpression();
+			return new AssignExpression(x, value);
+		}
+		else if (isFactorFollowSet()) {
+			return parseSimpleExpressionPrime(x);
+		}
+		else {
+			throw new ParseException();
+		}
 	}
 
 	private Expression parseSimpleExpressionPrime(Expression leadFactor) {
