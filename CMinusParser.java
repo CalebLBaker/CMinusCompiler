@@ -1,6 +1,10 @@
 package parser;
 import scanner.CMinusScanner;
+import scanner.Token;
+import scanner.InvalidTokenException;
+import scanner.UnexpectedEOFException;
 import java.util.ArrayList;
+import java.io.IOException;
 
 public class CMinusParser {
 
@@ -62,11 +66,28 @@ public class CMinusParser {
 		return null;
 	}
 
-	private Expression parseExpression() {
+	private Expression parseExpression() throws InvalidTokenException, IOException, UnexpectedEOFException {
+		Token nextToken = lex.getNextToken();
+		Token.TokenType type = nextToken.getTokenType();
+		switch(type) {
+			case IDENTIFIER : {
+				return parseExpressionPrime((String) nextToken.getTokenData());
+			}
+			case NUMBER : {
+
+			}
+			case LEFT_PAREN : {
+
+			}
+			default : {
+
+			}
+		}
+
 		return null;
 	}
 
-	private Expression parseExpressionPrime() {
+	private Expression parseExpressionPrime(String id) {
 		return null;
 	}
 
