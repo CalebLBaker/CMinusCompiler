@@ -58,16 +58,19 @@ public class VarExpression extends Expression {
 		return index;
 	}
 
-	// /**
-	//  * Prints the node
-	//  * @param tab how far to indent the node
-	//  */
-	// public void print(int tab) {
-	// 	String space = "";
-	// 	for (int i = 0; i < tab; i++) {
-	// 		space += " ";
-	// 	}
-	// 	System.out.print(space);
-	// 	System.out.println(data);
-	// }
+	/**
+	 * Prints the node
+	 * @param tab how far to indent the node
+	 */
+	public void print(String tab) {
+		System.out.print(tab + name);
+		if (index == null) {
+			System.out.println();
+		}
+		else {
+			System.out.println(" [");
+			index.print(tab + "    ");
+			Ssytem.out.println(tab + "]");
+		}
+	}
 }

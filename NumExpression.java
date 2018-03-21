@@ -40,12 +40,8 @@ public class NumExpression extends Expression {
 	 * Prints the node
 	 * @param tab how far to indent the node
 	 */
-	public void print(int tab) {
-		String space = "";
-		for (int i = 0; i < tab; i++) {
-			space += " ";
-		}
-		System.out.print(space);
+	public void print(String tab) {
+		System.out.print(tab);
 		System.out.println(data);
 	}
 }
