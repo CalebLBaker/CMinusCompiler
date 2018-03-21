@@ -1,5 +1,5 @@
 package parser;
 
-public class <class-name> {
+public class SelectionStatement {
 
 }

@@ -1,96 +1,100 @@
 package parser;
+import scanner.CMinusScanner;
+import java.util.ArrayList;
 
 public class CMinusParser {
 
-	private parseProgram() {
+	private CMinusScanner lex;
 
+	private Program parseProgram() {
+		return null;
 	}
 
-	private parseDeclaration() {
-
+	private Declaration parseDeclaration() {
+		return null;
 	}
 
-	private parseDeclPrime() {
-
+	private Declaration parseDeclPrime() {
+		return null;
 	}
 
-	private parseFunDeclPrime() {
-
+	private FunctionDeclaration parseFunDeclPrime() {
+		return null;
 	}
 
-	private parseVarDecl() {
-
+	private VariableDeclaration parseVarDecl() {
+		return null;
 	}
 
-	private parseParams() {
-
+	private ArrayList<Parameter> parseParams() {
+		return null;
 	}
 
-	private parseParam() {
-
+	private Parameter parseParam() {
+		return null;
 	}
 
-	private parseParamList() {
-
+	private ArrayList<Parameter> parseParamList() {
+		return null;
 	}
 
-	private parseCompoundStmt() {
-
+	private CompoundStatement parseCompoundStmt() {
+		return null;
 	}
 
-	private parseStatement() {
-
+	private Statement parseStatement() {
+		return null;
 	}
 
-	private parseExpressionStmt() {
-
+	private ExpressionStatement parseExpressionStmt() {
+		return null;
 	}
 
-	private parseSelectionStmt() {
-
+	private SelectionStatement parseSelectionStmt() {
+		return null;
 	}
 
-	private parseIterationStmt() {
-
+	private IterationStatement parseIterationStmt() {
+		return null;
 	}
 
-	private parseReturnStmt() {
-
+	private ReturnStatement parseReturnStmt() {
+		return null;
 	}
 
-	private parseExpression() {
-
+	private Expression parseExpression() {
+		return null;
 	}
 
-	private parseExpressionPrime() {
-
+	private Expression parseExpressionPrime() {
+		return null;
 	}
 
-	private parseExpressionPrimePrime() {
-
+	private Expression parseExpressionPrimePrime() {
+		return null;
 	}
 
-	private parseSimpleExpressionPrime() {
-
+	private Expression parseSimpleExpressionPrime() {
+		return null;
 	}
 
-	private parseAdditiveExpression() {
-
+	private Expression parseAdditiveExpression() {
+		return null;
 	}
 
-	private parseTerm() {
-
+	private Expression parseTerm() {
+		return null;
 	}
 
-	private parseFactor() {
-
+	private Expression parseFactor() {
+		return null;
 	}
 
-	private parseArgs() {
-
+	private ArrayList<Expression> parseArgs() {
+		return null;
 	}
 
-	private parseArgsList() {
-
+	private ArrayList<Expression> parseArgsList() {
+		return null;
 	}
 }
