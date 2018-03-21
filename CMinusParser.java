@@ -10,7 +10,8 @@ public class CMinusParser {
 
 	private CMinusScanner lex;
 
-	private void match(Token.TokenType t) throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+	private void match(Token.TokenType t)
+	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
 		if (lex.getNextToken().getTokenType() != t) {
 			throw new ParseException();
 		}
@@ -81,22 +82,22 @@ public class CMinusParser {
 		return null;
 	}
 
-	private Expression parseExpression() throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
-		Token nextToken = lex.viewNextToken();
+	private Expression parseExpression()
+	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+		Token nextToken = lex.getNextToken();
 		Token.TokenType type = nextToken.getTokenType();
 		switch(type) {
 			case IDENTIFIER : {
-				match(Token.TokenType.IDENTIFIER);
 				return parseExpressionPrime((String) nextToken.getTokenData());
 			}
 			case NUMBER : {
-				match(Token.TokenType.NUMBER);
 				NumExpression n = new NumExpression((int) nextToken.getTokenData());
 				return parseSimpleExpressionPrime(n);
 			}
 			case LEFT_PAREN : {
-				Expression f = parseFactor();
-				return parseSimpleExpressionPrime(f);
+				Expression e = parseExpression();
+				match(Token.TokenType.RIGHT_PAREN);
+				return parseSimpleExpressionPrime(e);
 			}
 			default : {
 				throw new ParseException();
@@ -104,7 +105,8 @@ public class CMinusParser {
 		}
 	}
 
-	private Expression parseExpressionPrime(String id) throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+	private Expression parseExpressionPrime(String id)
+	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
 		Token nextToken = lex.viewNextToken();
 		Token.TokenType type = nextToken.getTokenType();
 		if (type == Token.TokenType.LEFT_BRACKET) {
@@ -116,18 +118,25 @@ public class CMinusParser {
 		}
 		else if (type == Token.TokenType.ASSIGNMENT) {
 			VarExpression x = new VarExpression(id);
+			match(Token.TokenType.ASSIGNMENT);
+			Expression value = parseExpression();
+			return new AssignExpression(x, value);
 		}
 		else if (type == Token.TokenType.LEFT_PAREN) {
-
+			match(Token.TokenType.LEFT_PAREN);
+			ArrayList<Expression> a = parseArgs();
+			match(Token.TokenType.RIGHT_PAREN);
+			CallExpression call = new CallExpression(id, a);
+			return parseSimpleExpressionPrime(call);
 		}
 		else if (isBinaryOp() || type == Token.TokenType.SEMI_COLON || type == Token.TokenType.COMMA
 					|| type == Token.TokenType.RIGHT_BRACKET || type == Token.TokenType.RIGHT_PAREN) {
-
+			VarExpression firtFactor = new VarExpression(id);
+			return parseSimpleExpressionPrime(firtFactor);
 		}
 		else {
-
+			throw new ParseException();
 		}
-		return null;
 	}
 
 	private Expression parseExpressionPrimePrime(VarExpression x) {

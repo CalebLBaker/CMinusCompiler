@@ -70,7 +70,7 @@ public class VarExpression extends Expression {
 		else {
 			System.out.println(" [");
 			index.print(tab + "    ");
-			Ssytem.out.println(tab + "]");
+			System.out.println(tab + "]");
 		}
 	}
 }

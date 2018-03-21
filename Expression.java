@@ -1,5 +1,5 @@
 package parser;
 
-public class Expression {
-
+abstract public class Expression {
+	abstract public void print(String tab);
 }
