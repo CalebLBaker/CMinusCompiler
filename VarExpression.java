@@ -39,7 +39,7 @@ public class VarExpression extends Expression {
 	 * @param n the name of the variable.
 	 */
 	public VarExpression(String n) {
-		VarExpression(n, null);
+		this(n, null);
 	}
 
 	/**
