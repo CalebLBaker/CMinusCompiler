@@ -38,4 +38,18 @@ public class ParseException extends Exception {
 	public ParseException() {
 		this(null, 0, null, null);
 	}
+
+	public void printErrorMessage() {
+		String line = Integer.toString(linenum);
+		String f = Token.toString(found);
+		System.out.println("Error on line " + line);
+		if (thing == null) {
+			String e = Token.toString(expected);
+			System.out.println("\tExpected token:\t" + e);
+		}
+		else {
+			System.out.println("\tTrying to parse " + thing);
+		}
+		System.out.println("\tFound:\t\t\t" + f + "\n");
+	}
 }
