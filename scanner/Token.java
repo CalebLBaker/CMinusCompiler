@@ -8,11 +8,11 @@ package scanner;
 * File: Token.java
 * Created: Spring 2018
 * (C)Copyright Cedarville University, its Computer Science faculty, and the
-* authors. All rights reserved. 
+* authors. All rights reserved.
 *
 * Description: This class is used by CMinusScanner for the tokens it returns.
 * It does not inherit from any classs and it is not expected to be inherited
-* by any classes 
+* by any classes
 *
 */
 
@@ -21,7 +21,7 @@ public class Token {
 	private Object tokenData;
 
 	/**
-	* The constructor that takes a type parameter 
+	* The constructor that takes a type parameter
 	*
 	* @param type The type to be stored in tokenType
 	*/
@@ -30,7 +30,7 @@ public class Token {
 	}
 
 	/**
-	* The constructor that takes a type and data parameter 
+	* The constructor that takes a type and data parameter
 	*
 	* @param type The type to be stored in tokenType
 	* @param data The data to be stored in dataType
@@ -40,8 +40,108 @@ public class Token {
 		tokenData = data;
 	}
 
+	public static String toString(Token t) {
+		switch (t.getTokenType()) {
+			case IDENTIFIER : {
+				return t.getTokenData();
+			}
+			case NUMBER : {
+				return Integer.toString(t.getTokenData());
+			}
+			default : {
+				return toString(t.getTokenType());
+			}
+		}
+	}
+
+	public static String toString(TokenType t) {
+		switch (t) {
+			case IDENTIFIER : {
+				return "IDENTIFIER";
+			}
+			case NUMBER : {
+				return "NUMBER";
+			}
+			case INT : {
+				return "int";
+			}
+			case VOID : {
+				return "void";
+			}
+			case WHILE : {
+				return "while";
+			}
+			case RETURN : {
+				return "return";
+			}
+			case IF : {
+				return "if";
+			}
+			case ELSE : {
+				return "else";
+			}
+			case SEMI_COLON : {
+				return ";";
+			}
+			case COMMA : {
+				return ",";
+			}
+			case LEFT_PAREN : {
+				return "(";
+			}
+			case RIGHT_PAREN : {
+				return ")";
+			}
+			case LEFT_BRACKET : {
+				return "[";
+			}
+			case RIGHT_BRACKET : {
+				return "]";
+			}
+			case LESS_THAN : {
+				return "<";
+			}
+			case LESS_THAN_EQUAL_TO : {
+				return "<=";
+			}
+			case GREATER_THAN : {
+				return ">";
+			}
+			case GREATER_THAN_EQUAL_TO : {
+				return ">=";
+			}
+			case EQUALITY : {
+				return "==";
+			}
+			case NOT_EQUAL : {
+				return "!=";
+			}
+			case ASSIGNMENT : {
+				return "=";
+			}
+			case ADDITION : {
+				return "+";
+			}
+			case SUBTRACTION : {
+				return "-";
+			}
+			case MULTIPLICATION : {
+				return "*";
+			}
+			case DIVISION : {
+				return "/";
+			}
+			case END_OF_FILE : {
+				return "EOF";
+			}
+			default : {
+				return "Unknown token";
+			}
+		}
+	}
+
 	/**
-	* Accessor for tokenType 
+	* Accessor for tokenType
 	*
 	* @return tokenType always
 	*/
@@ -50,7 +150,7 @@ public class Token {
 	}
 
 	/**
-	* Accessor for tokenData  
+	* Accessor for tokenData
 	*
 	* @return tokenData always
 	*/
@@ -59,14 +159,14 @@ public class Token {
 	}
 
 	/**
-	* Mutator for tokenType 
+	* Mutator for tokenType
 	*
 	* @param type Type to be stored in tokenType
 	*/
 	public void setTokenType(TokenType type) {
 		tokenType = type;
 	}
-	
+
 	/**
 	* Mutator for tokenData
 	*
