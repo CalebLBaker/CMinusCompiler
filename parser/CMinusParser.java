@@ -55,15 +55,30 @@ public class CMinusParser {
 		return null;
 	}
 
-	private Declaration parseDeclaration() {
+	private Declaration parseDeclaration() throws LexException, ParseException {
+            int linenum = lex.getLineNum();
+            Token nextToken = lex.getNextToken();
+            Token nextID = lex.getNextToken();
+            Token.TokenType type = nextToken.getTokenType();
+            Token.TokenType type2 = nextID.getTokenType();
+            if(type2 == Token.TokenType.IDENTIFIER) {
+                throw new ParseException("Declaration", linenum, nextToken);  
+            }
+            switch(type) {
+                case INT: 
+                    return parseDeclPrime((String) nextID.getTokenData());
+                case VOID:
+                    //return parseFunDeclPrime((String) nextID.getTokenData());
+                default: 
+                    throw new ParseException("Declaration", linenum, nextToken);  
+            }
+	}
+
+	private Declaration parseDeclPrime(String id) {
 		return null;
 	}
 
-	private Declaration parseDeclPrime() {
-		return null;
-	}
-
-	private FunctionDeclaration parseFunDeclPrime() {
+	private FunctionDeclaration parseFunDeclPrime(String id) {
 		return null;
 	}
 
