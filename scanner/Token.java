@@ -43,10 +43,10 @@ public class Token {
 	public static String toString(Token t) {
 		switch (t.getTokenType()) {
 			case IDENTIFIER : {
-				return t.getTokenData();
+				return (String) t.getTokenData();
 			}
 			case NUMBER : {
-				return Integer.toString(t.getTokenData());
+				return Integer.toString((Integer) t.getTokenData());
 			}
 			default : {
 				return toString(t.getTokenType());
