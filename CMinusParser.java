@@ -17,13 +17,16 @@ public class CMinusParser {
 		}
 	}
 
-	private boolean isBinaryOp() {
+	private boolean isRelOp() {
 		Token.TokenType t = lex.viewNextToken().getTokenType();
 		return t == Token.TokenType.LESS_THAN || t == Token.TokenType.LESS_THAN_EQUAL_TO
-				|| t == Token.TokenType.GREATER_THAN || t == Token.TokenType.GREATER_THAN_EQUAL_TO
-				|| t == Token.TokenType.EQUALITY || t == Token.TokenType.NOT_EQUAL
-				|| t == Token.TokenType.ADDITION || t == Token.TokenType.SUBTRACTION
-				|| t == Token.TokenType.MULTIPLICATION || t == Token.TokenType.DIVISION;
+			|| t == Token.TokenType.GREATER_THAN || t == Token.TokenType.GREATER_THAN_EQUAL_TO
+			|| t == Token.TokenType.EQUALITY || t == Token.TokenType.NOT_EQUAL;
+	}
+
+	private boolean isBinaryOp() {
+		Token.TokenType t = lex.viewNextToken().getTokenType();
+		return isRelOp() || t == Token.TokenType.ADDITION || t == Token.TokenType.SUBTRACTION || t == Token.TokenType.MULTIPLICATION || t == Token.TokenType.DIVISION;
 	}
 
 	private boolean isFactorFollowSet() {
@@ -145,7 +148,8 @@ public class CMinusParser {
 		}
 	}
 
-	private Expression parseExpressionPrimePrime(VarExpression x) {
+	private Expression parseExpressionPrimePrime(VarExpression x)
+	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
 		Token nextToken = lex.viewNextToken();
 		if (nextToken.getTokenType() == Token.TokenType.ASSIGNMENT) {
 			match(Token.TokenType.ASSIGNMENT);
@@ -160,11 +164,25 @@ public class CMinusParser {
 		}
 	}
 
-	private Expression parseSimpleExpressionPrime(Expression leadFactor) {
-		return null;
+	private Expression parseSimpleExpressionPrime(Expression leadFactor)
+	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+		if (isFactorFollowSet()) {
+			Expression addExp = parseAdditiveExpression(leadFactor);
+			if (isRelOp()) {
+				Token.TokenType operator = lex.getNextToken().getTokenType();
+				Expression lastExp = parseAdditiveExpression(null);
+				return new BinaryExpression(addExp, operator, lastExp);
+			}
+			else {
+				return addExp;
+			}
+		}
+		else {
+			throw new ParseException();
+		}
 	}
 
-	private Expression parseAdditiveExpression() {
+	private Expression parseAdditiveExpression(Expression prime) {
 		return null;
 	}
 
