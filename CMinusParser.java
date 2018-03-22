@@ -24,9 +24,19 @@ public class CMinusParser {
 			|| t == Token.TokenType.EQUALITY || t == Token.TokenType.NOT_EQUAL;
 	}
 
-	private boolean isBinaryOp() {
+	private boolean isAddop() {
 		Token.TokenType t = lex.viewNextToken().getTokenType();
-		return isRelOp() || t == Token.TokenType.ADDITION || t == Token.TokenType.SUBTRACTION || t == Token.TokenType.MULTIPLICATION || t == Token.TokenType.DIVISION;
+		return t == Token.TokenType.ADDITION || t == Token.TokenType.SUBTRACTION;
+	}
+
+	private boolean isArithOp() {
+		Token.TokenType t = lex.viewNextToken().getTokenType();
+		return isAddop() || t == Token.TokenType.MULTIPLICATION
+						 || t == Token.TokenType.DIVISION;
+	}
+
+	private boolean isBinaryOp() {
+		return isRelOp() || isArithOp();
 	}
 
 	private boolean isFactorFollowSet() {
@@ -182,11 +192,29 @@ public class CMinusParser {
 		}
 	}
 
-	private Expression parseAdditiveExpression(Expression prime) {
-		return null;
+	private Expression parseAdditiveExpression(Expression prime)
+	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+		Token lookahead = lex.viewNextToken();
+		Token.TokenType type = lookahead.getTokenType();
+		if (prime == null && (type == Token.TokenType.IDENTIFIER
+			|| type == Token.TokenType.NUMBER || type == Token.TokenType.LEFT_PAREN)
+			|| prime != null && isArithOp()) {
+			Expression left = parseTerm(prime);
+			if (isAddop()) {
+				Token.TokenType operator = lex.getNextToken().getTokenType();
+				Expression right = parseAdditiveExpression(null);
+				return new BinaryExpression(left, operator, right);
+			}
+			else {
+				return left;
+			}
+		}
+		else {
+			throw new ParseException();
+		}
 	}
 
-	private Expression parseTerm() {
+	private Expression parseTerm(Expression prime) {
 		return null;
 	}
 
