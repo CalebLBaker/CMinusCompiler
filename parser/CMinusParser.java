@@ -182,8 +182,28 @@ public class CMinusParser {
 		return null;
 	}
 
+	// Parse a return statement
 	private ReturnStatement parseReturnStmt() {
-		return null;
+
+		match(Token.TokenType.RETURN);
+
+		// Get lookahead token and line number
+		Token lookahead = lex.viewNextToken();
+		Token.TokenType type = lookahead.getTokenType();
+		int linenum = lex.getLineNum();
+
+		// Parse return value
+		if (isFactorFirstSet()) {
+			Expression retVal = parseExpression();
+			return new ReturnStatement(retVal);
+		}
+		else if (type == SEMI_COLON) {
+			match(Token.TokenType.SEMI_COLON);
+			return new ReturnStatement(null);
+		}
+		else {
+			throw new ParseException("Return Statement", linenum, lookahead);
+		}
 	}
 
 	// Parse an expression
