@@ -1,8 +1,7 @@
 package parser;
 import scanner.CMinusScanner;
 import scanner.Token;
-import scanner.InvalidTokenException;
-import scanner.UnexpectedEOFException;
+import scanner.LexException;
 import java.util.ArrayList;
 import java.io.IOException;
 
@@ -10,8 +9,7 @@ public class CMinusParser {
 
 	private CMinusScanner lex;
 
-	private void match(Token.TokenType t)
-	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+	private void match(Token.TokenType t) throws LexException, ParseException {
 		if (lex.getNextToken().getTokenType() != t) {
 			throw new ParseException();
 		}
@@ -107,8 +105,7 @@ public class CMinusParser {
 		return null;
 	}
 
-	private Expression parseExpression()
-	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+	private Expression parseExpression() throws LexException, ParseException {
 		Token nextToken = lex.getNextToken();
 		Token.TokenType type = nextToken.getTokenType();
 		switch(type) {
@@ -130,8 +127,7 @@ public class CMinusParser {
 		}
 	}
 
-	private Expression parseExpressionPrime(String id)
-	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+	private Expression parseExpressionPrime(String id) throws LexException, ParseException {
 		Token nextToken = lex.viewNextToken();
 		Token.TokenType type = nextToken.getTokenType();
 		if (type == Token.TokenType.LEFT_BRACKET) {
@@ -163,8 +159,7 @@ public class CMinusParser {
 		}
 	}
 
-	private Expression parseExpressionPrimePrime(VarExpression x)
-	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+	private Expression parseExpressionPrimePrime(VarExpression x) throws LexException, ParseException {
 		Token nextToken = lex.viewNextToken();
 		if (nextToken.getTokenType() == Token.TokenType.ASSIGNMENT) {
 			match(Token.TokenType.ASSIGNMENT);
@@ -179,8 +174,7 @@ public class CMinusParser {
 		}
 	}
 
-	private Expression parseSimpleExpressionPrime(Expression leadFactor)
-	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+	private Expression parseSimpleExpressionPrime(Expression leadFactor) throws LexException, ParseException {
 		if (isFactorFollowSet()) {
 			Expression addExp = parseAdditiveExpression(leadFactor);
 			if (isRelOp()) {
@@ -197,8 +191,7 @@ public class CMinusParser {
 		}
 	}
 
-	private Expression parseAdditiveExpression(Expression prime)
-	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+	private Expression parseAdditiveExpression(Expression prime) throws LexException, ParseException {
 		if (prime == null && isFactorFirstSet() || prime != null && (isAddop() || isMulop())) {
 			Expression left = parseTerm(prime);
 			if (isAddop()) {
@@ -215,8 +208,7 @@ public class CMinusParser {
 		}
 	}
 
-	private Expression parseTerm(Expression prime)
-	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+	private Expression parseTerm(Expression prime) throws LexException, ParseException {
 		if (prime == null) {
 			prime = parseFactor();
 		}
@@ -233,8 +225,7 @@ public class CMinusParser {
 		}
 	}
 
-	private Expression parseFactor()
-	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+	private Expression parseFactor() throws LexException, ParseException {
 		Token lookahead = lex.getNextToken();
 		Token.TokenType type = lookahead.getTokenType();
 		switch(type) {
@@ -255,8 +246,7 @@ public class CMinusParser {
 		}
 	}
 
-	private Expression parseFactorPrime(String id)
-	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+	private Expression parseFactorPrime(String id) throws LexException, ParseException {
 		Token lookahead = lex.viewNextToken();
 		Token.TokenType type = lookahead.getTokenType();
 		if (type == Token.TokenType.LEFT_PAREN) {
@@ -279,8 +269,7 @@ public class CMinusParser {
 		}
 	}
 
-	private ArrayList<Expression> parseArgs()
-	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+	private ArrayList<Expression> parseArgs() throws LexException, ParseException {
 		ArrayList<Expression> ret = new ArrayList<Expression>();
 		while (isFactorFirstSet()) {
 			ret.add(parseExpression());

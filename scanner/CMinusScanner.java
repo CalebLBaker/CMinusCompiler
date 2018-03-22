@@ -22,6 +22,7 @@ import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import scanner.LexException;
 
 
 public class CMinusScanner implements Scanner {
@@ -63,15 +64,15 @@ public class CMinusScanner implements Scanner {
 	 * @param args the filenames of the input and output files
 	 */
 	public static void main(String []args) {
-		try { 
+		try {
 			BufferedWriter writer;
 			//Check for the proper parameters passed in
 			if (args.length > 1 && args[0].length() > 0 && args[1].length() > 0) {
 				CMinusScanner scan = new CMinusScanner(args[0]);
 				writer = new BufferedWriter(new FileWriter(args[1]));
 				Token token = scan.getNextToken();
-				
-				// While the token gotten is not the end of file token read in tokens 
+
+				// While the token gotten is not the end of file token read in tokens
 				// and print them to the file
 				while(token.getTokenType() != Token.TokenType.END_OF_FILE) {
 					switch(token.getTokenType()) {
@@ -104,11 +105,7 @@ public class CMinusScanner implements Scanner {
 			System.out.println("Error: something went wrong reading from or writing to a file.");
 			return;
 		}
-		catch (InvalidTokenException ex) {
-			ex.printErrorMessage();
-			return;
-		}
-		catch (UnexpectedEOFException ex) {
+		catch (LexException ex) {
 			ex.printErrorMessage();
 			return;
 		}
@@ -121,10 +118,15 @@ public class CMinusScanner implements Scanner {
 	 * @throws UnexpectedEOFException if an end-of-file was reached inside of a comment
 	 * @throws IOException if something went wrong reading from the file
 	 */
-	public Token getNextToken() throws InvalidTokenException, IOException, UnexpectedEOFException {
+	public Token getNextToken() throws LexException {
 		Token returnToken = nextToken;
 		if(nextToken.getTokenType() != Token.TokenType.END_OF_FILE) {
-			nextToken = scanToken();
+			try {
+				nextToken = scanToken();
+			}
+			catch (IOException ex) {
+				throw new LexException("Error: something went wrong reading from or writing to a file.");
+			}
 		}
 		return returnToken;
 	}

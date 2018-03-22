@@ -10,22 +10,12 @@
 
 package scanner;
 
-public class UnexpectedEOFException extends Exception {
-	private int linenum;
-
+public class UnexpectedEOFException extends LexException {
 	/**
 	 * Constructor for UnexpectedEOFException class
 	 * @param line the line number in the source file that the invalid token was found on
 	 */
 	public UnexpectedEOFException(int line) {
-		super();
-		linenum = line;
-	}
-
-	/**
-	 * Prints an error message explaining the unexpected EOF error
-	 */
-	public void printErrorMessage() {
-		System.out.println("Error: Unexpected end-of-file on line " + Integer.toString(linenum) + ". Expected */ token first.");
+		super("Error: Unexpected end-of-file on line " + Integer.toString(line) + ". Expected */ token first.");
 	}
 }

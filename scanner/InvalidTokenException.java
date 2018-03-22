@@ -11,25 +11,13 @@
 
 package scanner;
 
-public class InvalidTokenException extends Exception {
-	private String invalidToken;
-	private int linenum;
-
+public class InvalidTokenException extends LexException {
 	/**
 	 * Constructor for InvalidTokenException class
 	 * @param token the invalid token that was read
 	 * @param line the line number in the source file that the invalid token was found on
 	 */
 	public InvalidTokenException(String token, int line) {
-		super();
-		invalidToken = token;
-		linenum = line;
-	}
-
-	/**
-	 * Prints an error message explaining the invalid token error
-	 */
-	public void printErrorMessage() {
-		System.out.println("Invalid token: \"" + invalidToken + "\" on line " + Integer.toString(linenum));
+		super("Invalid token: \"" + token + "\" on line " + Integer.toString(line));
 	}
 }
