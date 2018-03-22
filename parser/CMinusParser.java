@@ -116,8 +116,8 @@ public class CMinusParser {
                 case VOID:
                     Declaration decl = parseFunDeclPrime((String) nextID.getTokenData());
                     return new FunctionDeclaration(type, (String)nextID.getTokenData(), decl);
-                default: 
-                    throw new ParseException("Declaration", linenum, nextToken);  
+                default:
+                    throw new ParseException("Declaration", linenum, nextToken);
             }
 	}
 
@@ -126,18 +126,18 @@ public class CMinusParser {
                 Token nextToken = lex.viewNextToken();
                 Token.TokenType type = nextToken.getTokenType();
                 switch(type) {
-                    case SEMI_COLON: 
+                    case SEMI_COLON:
                         match(Token.TokenType.SEMI_COLON);
                         return new VariableDeclaration(id);
-                    case LEFT_BRACKET: 
+                    case LEFT_BRACKET:
                         match(Token.TokenType.LEFT_BRACKET);
 			Token num = lex.getNextToken();
 			match(Token.TokenType.RIGHT_BRACKET);
                         return new VariableDeclaration(id, (int)num.getTokenData());
                     case LEFT_PAREN:
                         return parseFunDeclPrime(id);
-                    default: 
-                        throw new ParseException("DeclPrime", linenum, nextToken);  
+                    default:
+                        throw new ParseException("DeclPrime", linenum, nextToken);
                 }
 	}
 
@@ -191,8 +191,40 @@ public class CMinusParser {
 		}
 	}
 
-	private SelectionStatement parseSelectionStmt() {
-		return null;
+	// Parse an if statement
+	private SelectionStatement parseSelectionStmt() throws ParseException, LexException {
+
+		// If part
+		match(Token.TokenType.IF);
+		match(Token.TokenType.LEFT_PAREN);
+		Expression condition = parseExpression();
+		match(Token.TokenType.RIGHT_PAREN);
+		Statement body = parseStatement();
+
+		// Get lookahead and line number for else part
+		Token lookahead = lex.viewNextToken();
+		Token.TokenType type = lookahead.getTokenType();
+		int linenum = lex.getLineNum();
+
+		// Else part
+		if (type == Token.TokenType.ELSE) {
+			match(Token.TokenType.ELSE);
+			Statement elsePart = parseStatement();
+			return new SelectionStatement(condition, body, elsePart);
+		}
+
+		// No else
+		else if (isFactorFirstSet() || type == Token.TokenType.SEMI_COLON
+			|| type == Token.TokenType.LEFT_BRACE || type == Token.TokenType.RIGHT_BRACE
+			|| type == Token.TokenType.IF || type == Token.TokenType.ELSE
+			|| type == Token.TokenType.WHILE || type == Token.TokenType.RETURN) {
+			return new SelectionStatement(condition, body);
+		}
+
+		// Error
+		else {
+			throw new ParseException("Selection Statement", linenum, lookahead);
+		}
 	}
 
 	// Parse a while loop
