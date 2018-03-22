@@ -259,8 +259,28 @@ public class CMinusParser {
 		}
 	}
 
-	private Expression parseFactorPrime(String id) {
-		return null;
+	private Expression parseFactorPrime(String id)
+	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+		Token lookahead = lex.viewNextToken();
+		Token.TokenType type = lookahead.getTokenType();
+		if (type == Token.TokenType.LEFT_PAREN) {
+			match(Token.TokenType.LEFT_PAREN);
+			ArrayList<Expression> parameters = parseArgs();
+			match(Token.TokenType.RIGHT_PAREN);
+			return new CallExpression(id, parameters);
+		}
+		else if (type == Token.TokenType.LEFT_BRACKET) {
+			match(Token.TokenType.LEFT_BRACKET);
+			Expression index = parseExpression();
+			match(Token.TokenType.RIGHT_BRACKET);
+			return new VarExpression(id, index);
+		}
+		else if (isFactorFollowSet()) {
+			return new VarExpression(id);
+		}
+		else {
+			throw new ParseException();
+		}
 	}
 
 	private ArrayList<Expression> parseArgs() {
