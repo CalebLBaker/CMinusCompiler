@@ -195,8 +195,14 @@ public class CMinusParser {
 		return null;
 	}
 
-	private IterationStatement parseIterationStmt() {
-		return null;
+	// Parse a while loop
+	private IterationStatement parseIterationStmt() throws LexException, ParseException {
+		match(Token.TokenType.WHILE);
+		match(Token.TokenType.LEFT_PAREN);
+		Expression condition = parseExpression();
+		match(Token.TokenType.RIGHT_PAREN);
+		Statement body = parseStatement();
+		return new IterationStatement(condition, body);
 	}
 
 	// Parse a return statement
