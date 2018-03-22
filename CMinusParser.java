@@ -34,10 +34,6 @@ public class CMinusParser {
 		return t == Token.TokenType.MULTIPLICATION || t == Token.TokenType.DIVISION;
 	}
 
-	private boolean isArithOp() {
-		return isAddop() || isMulop();
-	}
-
 	private boolean isFactorFirstSet() {
 		Token.TokenType t = lex.viewNextToken().getTokenType();
 		return t == Token.TokenType.IDENTIFIER || t == Token.TokenType.NUMBER
@@ -203,7 +199,7 @@ public class CMinusParser {
 
 	private Expression parseAdditiveExpression(Expression prime)
 	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
-		if (prime == null && isFactorFirstSet() || prime != null && isArithOp()) {
+		if (prime == null && isFactorFirstSet() || prime != null && (isAddop() || isMulop)) {
 			Expression left = parseTerm(prime);
 			if (isAddop()) {
 				Token.TokenType operator = lex.getNextToken().getTokenType();
