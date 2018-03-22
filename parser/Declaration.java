@@ -1,5 +1,5 @@
 package parser;
 
-public class Declaration {
+abstract public class Declaration {
 
 }
