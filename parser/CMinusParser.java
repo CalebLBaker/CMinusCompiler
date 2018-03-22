@@ -166,6 +166,7 @@ public class CMinusParser {
 			return new ExpressionStatement(e);
 		}
 		else if (type == SEMI_COLON) {
+			match(Token.TokenType.SEMI_COLON);
 			return new ExpressionStatement(null);
 		}
 		else {
