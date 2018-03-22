@@ -33,6 +33,10 @@ public class CMinusScanner implements Scanner {
 
 	private final char EOF = '\uffff';
 
+	public int getLineNum() {
+		return linenum;
+	}
+
 	// States the Lexing DFA can be in while producing a token.
 	private enum StateType {
 		START,
