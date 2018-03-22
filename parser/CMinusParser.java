@@ -10,8 +10,10 @@ public class CMinusParser {
 	private CMinusScanner lex;
 
 	private void match(Token.TokenType t) throws LexException, ParseException {
-		if (lex.getNextToken().getTokenType() != t) {
-			throw new ParseException();
+		int line = lex.getLineNum();
+		Token nextToken = lex.getNextToken();
+		if (nextToken.getTokenType() != t) {
+			throw new ParseException(line, nextToken, t);
 		}
 	}
 
@@ -106,6 +108,7 @@ public class CMinusParser {
 	}
 
 	private Expression parseExpression() throws LexException, ParseException {
+		int linenum = lex.getLineNum();
 		Token nextToken = lex.getNextToken();
 		Token.TokenType type = nextToken.getTokenType();
 		switch(type) {
@@ -122,7 +125,7 @@ public class CMinusParser {
 				return parseSimpleExpressionPrime(e);
 			}
 			default : {
-				throw new ParseException();
+				throw new ParseException("Expression", linenum, nextToken);
 			}
 		}
 	}
@@ -155,7 +158,8 @@ public class CMinusParser {
 			return parseSimpleExpressionPrime(firtFactor);
 		}
 		else {
-			throw new ParseException();
+			int linenum = lex.getLineNum();
+			throw new ParseException("Expression", linenum, nextToken);
 		}
 	}
 
@@ -170,7 +174,8 @@ public class CMinusParser {
 			return parseSimpleExpressionPrime(x);
 		}
 		else {
-			throw new ParseException();
+			int linenum = lex.getLineNum();
+			throw new ParseException("Expression", linenum, nextToken);
 		}
 	}
 
@@ -187,7 +192,9 @@ public class CMinusParser {
 			}
 		}
 		else {
-			throw new ParseException();
+			int linenum = lex.getLineNum();
+			Token nextToken = lex.viewNextToken();
+			throw new ParseException("Simple Expression", linenum, nextToken);
 		}
 	}
 
@@ -204,7 +211,9 @@ public class CMinusParser {
 			}
 		}
 		else {
-			throw new ParseException();
+			int linenum = lex.getLineNum();
+			Token nextToken = lex.viewNextToken();
+			throw new ParseException("Additive Expression", linenum, nextToken);
 		}
 	}
 
@@ -221,11 +230,14 @@ public class CMinusParser {
 			return prime;
 		}
 		else {
-			throw new ParseException();
+			int linenum = lex.getLineNum();
+			Token nextToken = lex.viewNextToken();
+			throw new ParseException("Term", linenum, nextToken);
 		}
 	}
 
 	private Expression parseFactor() throws LexException, ParseException {
+		int linenum = lex.getLineNum();
 		Token lookahead = lex.getNextToken();
 		Token.TokenType type = lookahead.getTokenType();
 		switch(type) {
@@ -241,12 +253,13 @@ public class CMinusParser {
 				return parseFactorPrime((String) lookahead.getTokenData());
 			}
 			default : {
-				throw new ParseException();
+				throw new ParseException("Factor", linenum, lookahead);
 			}
 		}
 	}
 
 	private Expression parseFactorPrime(String id) throws LexException, ParseException {
+		int linenum = lex.getLineNum();
 		Token lookahead = lex.viewNextToken();
 		Token.TokenType type = lookahead.getTokenType();
 		if (type == Token.TokenType.LEFT_PAREN) {
@@ -265,12 +278,13 @@ public class CMinusParser {
 			return new VarExpression(id);
 		}
 		else {
-			throw new ParseException();
+			throw new ParseException("Factor", linenum, lookahead);
 		}
 	}
 
 	private ArrayList<Expression> parseArgs() throws LexException, ParseException {
 		ArrayList<Expression> ret = new ArrayList<Expression>();
+		int linenum = lex.getLineNum();
 		while (isFactorFirstSet()) {
 			ret.add(parseExpression());
 			Token lookahead = lex.getNextToken();
@@ -283,16 +297,18 @@ public class CMinusParser {
 					return ret;
 				}
 				default : {
-					throw new ParseException();
+					throw new ParseException("Args", linenum, lookahead);
 				}
 			}
+			linenum = lex.getLineNum();
 		}
-		Token.TokenType lookahead = lex.viewNextToken().getTokenType();
-		if (ret.isEmpty() && lookahead == Token.TokenType.RIGHT_PAREN) {
+		Token lookahead = lex.viewNextToken();
+		Token.TokenType type = lookahead.getTokenType();
+		if (ret.isEmpty() && type == Token.TokenType.RIGHT_PAREN) {
 			return ret;
 		}
 		else {
-			throw new ParseException();
+			throw new ParseException("Args", linenum, lookahead);
 		}
 	}
 }
