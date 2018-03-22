@@ -114,14 +114,31 @@ public class CMinusParser {
                 case INT:
                     return parseDeclPrime((String) nextID.getTokenData());
                 case VOID:
-                    //return parseFunDeclPrime((String) nextID.getTokenData());
-                default:
-                    throw new ParseException("Declaration", linenum, nextToken);
+                    Declaration decl = parseFunDeclPrime((String) nextID.getTokenData());
+                    return new FunctionDeclaration(type, (String)nextID.getTokenData(), decl);
+                default: 
+                    throw new ParseException("Declaration", linenum, nextToken);  
             }
 	}
 
-	private Declaration parseDeclPrime(String id) {
-		return null;
+	private Declaration parseDeclPrime(String id) throws LexException, ParseException {
+                int linenum = lex.getLineNum();
+                Token nextToken = lex.viewNextToken();
+                Token.TokenType type = nextToken.getTokenType();
+                switch(type) {
+                    case SEMI_COLON: 
+                        match(Token.TokenType.SEMI_COLON);
+                        return new VariableDeclaration(id);
+                    case LEFT_BRACKET: 
+                        match(Token.TokenType.LEFT_BRACKET);
+			Token num = lex.getNextToken();
+			match(Token.TokenType.RIGHT_BRACKET);
+                        return new VariableDeclaration(id, (int)num.getTokenData());
+                    case LEFT_PAREN:
+                        return parseFunDeclPrime(id);
+                    default: 
+                        throw new ParseException("DeclPrime", linenum, nextToken);  
+                }
 	}
 
 	private FunctionDeclaration parseFunDeclPrime(String id) {
