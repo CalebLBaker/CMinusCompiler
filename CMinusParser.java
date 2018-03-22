@@ -29,21 +29,30 @@ public class CMinusParser {
 		return t == Token.TokenType.ADDITION || t == Token.TokenType.SUBTRACTION;
 	}
 
-	private boolean isArithOp() {
+	private boolean isMulop() {
 		Token.TokenType t = lex.viewNextToken().getTokenType();
-		return isAddop() || t == Token.TokenType.MULTIPLICATION
-						 || t == Token.TokenType.DIVISION;
+		return t == Token.TokenType.MULTIPLICATION || t == Token.TokenType.DIVISION;
 	}
 
-	private boolean isBinaryOp() {
-		return isRelOp() || isArithOp();
+	private boolean isArithOp() {
+		return isAddop() || isMulop();
+	}
+
+	private boolean isFactorFirstSet() {
+		Token.TokenType t = lex.viewNextToken().getTokenType();
+		return t == Token.TokenType.IDENTIFIER || t == Token.TokenType.NUMBER
+			|| t == Token.TokenType.LEFT_PAREN;
+	}
+
+	private boolean isTermFollowSet() {
+		Token.TokenType t = lex.viewNextToken().getTokenType();
+		return isAddop() || isRelOp() || t == Token.TokenType.SEMI_COLON
+				|| t == Token.TokenType.COMMA || t == Token.TokenType.RIGHT_BRACKET
+				|| t == Token.TokenType.RIGHT_PAREN;
 	}
 
 	private boolean isFactorFollowSet() {
-		Token.TokenType t = lex.viewNextToken().getTokenType();
-		return isBinaryOp() || t == Token.TokenType.SEMI_COLON
-				|| t == Token.TokenType.COMMA || t == Token.TokenType.RIGHT_BRACKET
-				|| t == Token.TokenType.RIGHT_PAREN;
+		return isTermFollowSet() || isMulop();
 	}
 
 	private Program parseProgram() {
@@ -194,11 +203,7 @@ public class CMinusParser {
 
 	private Expression parseAdditiveExpression(Expression prime)
 	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
-		Token lookahead = lex.viewNextToken();
-		Token.TokenType type = lookahead.getTokenType();
-		if (prime == null && (type == Token.TokenType.IDENTIFIER
-			|| type == Token.TokenType.NUMBER || type == Token.TokenType.LEFT_PAREN)
-			|| prime != null && isArithOp()) {
+		if (prime == null && isFactorFirstSet() || prime != null && isArithOp()) {
 			Expression left = parseTerm(prime);
 			if (isAddop()) {
 				Token.TokenType operator = lex.getNextToken().getTokenType();
@@ -214,8 +219,22 @@ public class CMinusParser {
 		}
 	}
 
-	private Expression parseTerm(Expression prime) {
-		return null;
+	private Expression parseTerm(Expression prime)
+	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+		if (prime == null) {
+			prime = parseFactor();
+		}
+		if (isMulop()) {
+			Token.TokenType operator = lex.getNextToken().getTokenType();
+			Expression right = parseTerm(null);
+			return new BinaryExpression(prime, operator, right);
+		}
+		else if (isTermFollowSet()) {
+			return prime;
+		}
+		else {
+			throw new ParseException();
+		}
 	}
 
 	private Expression parseFactor() {
