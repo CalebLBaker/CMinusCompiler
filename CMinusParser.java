@@ -199,7 +199,7 @@ public class CMinusParser {
 
 	private Expression parseAdditiveExpression(Expression prime)
 	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
-		if (prime == null && isFactorFirstSet() || prime != null && (isAddop() || isMulop)) {
+		if (prime == null && isFactorFirstSet() || prime != null && (isAddop() || isMulop())) {
 			Expression left = parseTerm(prime);
 			if (isAddop()) {
 				Token.TokenType operator = lex.getNextToken().getTokenType();
