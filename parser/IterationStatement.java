@@ -26,7 +26,7 @@ public class IterationStatement extends Statement {
 	 * @param predicate the condition for the while loop
 	 * @param contents the body of the while loop
 	 */
-	public Statement(Expression predicate, Statement contents) {
+	public IterationStatement(Expression predicate, Statement contents) {
 		condition = predicate;
 		body = contents;
 	}
@@ -43,7 +43,7 @@ public class IterationStatement extends Statement {
 	 * Accessor for the body
 	 * @return the body of the loop
 	 */
-	public Expression getBody() {
+	public Statement getBody() {
 		return body;
 	}
 

@@ -153,7 +153,7 @@ public class CMinusParser {
 	}
 
 	// Parse an expression statement
-	private ExpressionStatement parseExpressionStmt() {
+	private ExpressionStatement parseExpressionStmt() throws LexException, ParseException {
 
 		// Get lookahead token and line number
 		Token lookahead = lex.viewNextToken();
@@ -165,7 +165,7 @@ public class CMinusParser {
 			Expression e = parseExpression();
 			return new ExpressionStatement(e);
 		}
-		else if (type == SEMI_COLON) {
+		else if (type == Token.TokenType.	SEMI_COLON) {
 			match(Token.TokenType.SEMI_COLON);
 			return new ExpressionStatement(null);
 		}
@@ -183,7 +183,7 @@ public class CMinusParser {
 	}
 
 	// Parse a return statement
-	private ReturnStatement parseReturnStmt() {
+	private ReturnStatement parseReturnStmt() throws LexException, ParseException {
 
 		match(Token.TokenType.RETURN);
 
@@ -197,7 +197,7 @@ public class CMinusParser {
 			Expression retVal = parseExpression();
 			return new ReturnStatement(retVal);
 		}
-		else if (type == SEMI_COLON) {
+		else if (type == Token.TokenType.SEMI_COLON) {
 			match(Token.TokenType.SEMI_COLON);
 			return new ReturnStatement(null);
 		}
