@@ -237,7 +237,29 @@ public class CMinusParser {
 		}
 	}
 
-	private Expression parseFactor() {
+	private Expression parseFactor()
+	  throws InvalidTokenException, IOException, UnexpectedEOFException, ParseException {
+		Token lookahead = lex.getNextToken();
+		Token.TokenType type = lookahead.getTokenType();
+		switch(type) {
+			case LEFT_PAREN : {
+				Expression e = parseExpression();
+				match(Token.TokenType.RIGHT_PAREN);
+				return e;
+			}
+			case NUMBER : {
+				return new NumExpression((int) lookahead.getTokenData());
+			}
+			case IDENTIFIER : {
+				return parseFactorPrime((String) lookahead.getTokenData());
+			}
+			default : {
+				throw new ParseException();
+			}
+		}
+	}
+
+	private Expression parseFactorPrime(String id) {
 		return null;
 	}
 
