@@ -17,7 +17,6 @@ import scanner.Token;
 
 public class BinaryExpression extends Expression {
 
-
 	// Left hand side of the expression
 	private Expression lhs;
 
@@ -68,39 +67,7 @@ public class BinaryExpression extends Expression {
 	 * @param tab how far to indent the node
 	 */
 	public void print(String tab) {
-		System.out.print(tab);
-		switch (operator) {
-			case LESS_THAN : {
-				System.out.println("<");
-			}
-			case LESS_THAN_EQUAL_TO : {
-				System.out.println("<=");
-			}
-			case GREATER_THAN : {
-				System.out.println(">");
-			}
-			case GREATER_THAN_EQUAL_TO : {
-				System.out.println(">=");
-			}
-			case EQUALITY : {
-				System.out.println("==");
-			}
-			case NOT_EQUAL : {
-				System.out.println("!=");
-			}
-			case ADDITION : {
-				System.out.println("+");
-			}
-			case SUBTRACTION : {
-				System.out.println("-");
-			}
-			case MULTIPLICATION : {
-				System.out.println("*");
-			}
-			case DIVISION : {
-				System.out.println("/");
-			}
-		}
+		System.out.print(tab + Token.toString(operator));
 		tab += "    ";
 		lhs.print(tab);
 		rhs.print(tab);

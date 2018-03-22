@@ -9,6 +9,8 @@ public class CMinusParser {
 
 	private CMinusScanner lex;
 
+	// Match a token
+	// Throws an excpetion if the next token doesn't match
 	private void match(Token.TokenType t) throws LexException, ParseException {
 		int line = lex.getLineNum();
 		Token nextToken = lex.getNextToken();
@@ -17,6 +19,7 @@ public class CMinusParser {
 		}
 	}
 
+	// Check if the next token is a comparison operator
 	private boolean isRelOp() {
 		Token.TokenType t = lex.viewNextToken().getTokenType();
 		return t == Token.TokenType.LESS_THAN || t == Token.TokenType.LESS_THAN_EQUAL_TO
@@ -24,22 +27,26 @@ public class CMinusParser {
 			|| t == Token.TokenType.EQUALITY || t == Token.TokenType.NOT_EQUAL;
 	}
 
+	// Check if the next token is + or -
 	private boolean isAddop() {
 		Token.TokenType t = lex.viewNextToken().getTokenType();
 		return t == Token.TokenType.ADDITION || t == Token.TokenType.SUBTRACTION;
 	}
 
+	// Check if the next token is * or /
 	private boolean isMulop() {
 		Token.TokenType t = lex.viewNextToken().getTokenType();
 		return t == Token.TokenType.MULTIPLICATION || t == Token.TokenType.DIVISION;
 	}
 
+	// Check if the next token is in the first set of factor
 	private boolean isFactorFirstSet() {
 		Token.TokenType t = lex.viewNextToken().getTokenType();
 		return t == Token.TokenType.IDENTIFIER || t == Token.TokenType.NUMBER
 			|| t == Token.TokenType.LEFT_PAREN;
 	}
 
+	// Check if the next token is in the follow set of term
 	private boolean isTermFollowSet() {
 		Token.TokenType t = lex.viewNextToken().getTokenType();
 		return isAddop() || isRelOp() || t == Token.TokenType.SEMI_COLON
@@ -47,6 +54,7 @@ public class CMinusParser {
 				|| t == Token.TokenType.RIGHT_PAREN;
 	}
 
+	// Check if the next token is in the follow set of factor
 	private boolean isFactorFollowSet() {
 		return isTermFollowSet() || isMulop();
 	}
@@ -122,10 +130,14 @@ public class CMinusParser {
 		return null;
 	}
 
+	// Parse an expression
 	private Expression parseExpression() throws LexException, ParseException {
+
+		// Get the line number and lookahead token
 		int linenum = lex.getLineNum();
 		Token nextToken = lex.getNextToken();
 		Token.TokenType type = nextToken.getTokenType();
+
 		switch(type) {
 			case IDENTIFIER : {
 				return parseExpressionPrime((String) nextToken.getTokenData());
@@ -145,9 +157,14 @@ public class CMinusParser {
 		}
 	}
 
+	// Parse an expression that has had the first identifier stripped off
 	private Expression parseExpressionPrime(String id) throws LexException, ParseException {
+
+		// Get lookahead token
 		Token nextToken = lex.viewNextToken();
 		Token.TokenType type = nextToken.getTokenType();
+
+		// Expression starts with an array
 		if (type == Token.TokenType.LEFT_BRACKET) {
 			match(Token.TokenType.LEFT_BRACKET);
 			Expression i = parseExpression();
@@ -155,12 +172,16 @@ public class CMinusParser {
 			VarExpression x = new VarExpression(id, i);
 			return parseExpressionPrimePrime(x);
 		}
+
+		// Assignment expression
 		else if (type == Token.TokenType.ASSIGNMENT) {
 			VarExpression x = new VarExpression(id);
 			match(Token.TokenType.ASSIGNMENT);
 			Expression value = parseExpression();
 			return new AssignExpression(x, value);
 		}
+
+		// Call expression
 		else if (type == Token.TokenType.LEFT_PAREN) {
 			match(Token.TokenType.LEFT_PAREN);
 			ArrayList<Expression> a = parseArgs();
@@ -168,16 +189,21 @@ public class CMinusParser {
 			CallExpression call = new CallExpression(id, a);
 			return parseSimpleExpressionPrime(call);
 		}
+
+		// Some other type of expression
 		else if (isFactorFollowSet()) {
-			VarExpression firtFactor = new VarExpression(id);
-			return parseSimpleExpressionPrime(firtFactor);
+			VarExpression firstFactor = new VarExpression(id);
+			return parseSimpleExpressionPrime(firstFactor);
 		}
+
+		// Error
 		else {
 			int linenum = lex.getLineNum();
 			throw new ParseException("Expression", linenum, nextToken);
 		}
 	}
 
+	// Parse an expression that has had the leading factor pulled off
 	private Expression parseExpressionPrimePrime(VarExpression x) throws LexException, ParseException {
 		Token nextToken = lex.viewNextToken();
 		if (nextToken.getTokenType() == Token.TokenType.ASSIGNMENT) {
@@ -194,6 +220,7 @@ public class CMinusParser {
 		}
 	}
 
+	// Parse a simple expression that has had the first factor pulled off
 	private Expression parseSimpleExpressionPrime(Expression leadFactor) throws LexException, ParseException {
 		if (isFactorFollowSet()) {
 			Expression addExp = parseAdditiveExpression(leadFactor);
@@ -213,7 +240,12 @@ public class CMinusParser {
 		}
 	}
 
+	// Parse an additive expression
+	// First factor could be passed in as a parameter
 	private Expression parseAdditiveExpression(Expression prime) throws LexException, ParseException {
+
+		// If looking for a factor and there is a factor
+		// or if the factor was passed as a parameter and there is an operator
 		if (prime == null && isFactorFirstSet() || prime != null && (isAddop() || isMulop())) {
 			Expression left = parseTerm(prime);
 			if (isAddop()) {
@@ -225,6 +257,8 @@ public class CMinusParser {
 				return left;
 			}
 		}
+
+		// Error
 		else {
 			int linenum = lex.getLineNum();
 			Token nextToken = lex.viewNextToken();
@@ -232,18 +266,27 @@ public class CMinusParser {
 		}
 	}
 
+	// Parse a term
 	private Expression parseTerm(Expression prime) throws LexException, ParseException {
+
+		// If the first factor wasn't passed, parse a factor
 		if (prime == null) {
 			prime = parseFactor();
 		}
+
+		// Term has several factors
 		if (isMulop()) {
 			Token.TokenType operator = lex.getNextToken().getTokenType();
 			Expression right = parseTerm(null);
 			return new BinaryExpression(prime, operator, right);
 		}
+
+		// Term is a single factor
 		else if (isTermFollowSet()) {
 			return prime;
 		}
+
+		// Error
 		else {
 			int linenum = lex.getLineNum();
 			Token nextToken = lex.viewNextToken();
@@ -251,10 +294,15 @@ public class CMinusParser {
 		}
 	}
 
+	// Parse a factor
 	private Expression parseFactor() throws LexException, ParseException {
+
+		// Get the line number and lookahead token
 		int linenum = lex.getLineNum();
 		Token lookahead = lex.getNextToken();
 		Token.TokenType type = lookahead.getTokenType();
+
+
 		switch(type) {
 			case LEFT_PAREN : {
 				Expression e = parseExpression();
@@ -273,33 +321,48 @@ public class CMinusParser {
 		}
 	}
 
+	// Parse a factor that has had an identifier pulled off
 	private Expression parseFactorPrime(String id) throws LexException, ParseException {
+
+		// Get line number and lookahead character
 		int linenum = lex.getLineNum();
 		Token lookahead = lex.viewNextToken();
 		Token.TokenType type = lookahead.getTokenType();
+
+		// Function call
 		if (type == Token.TokenType.LEFT_PAREN) {
 			match(Token.TokenType.LEFT_PAREN);
 			ArrayList<Expression> parameters = parseArgs();
 			match(Token.TokenType.RIGHT_PAREN);
 			return new CallExpression(id, parameters);
 		}
+
+		// Array
 		else if (type == Token.TokenType.LEFT_BRACKET) {
 			match(Token.TokenType.LEFT_BRACKET);
 			Expression index = parseExpression();
 			match(Token.TokenType.RIGHT_BRACKET);
 			return new VarExpression(id, index);
 		}
+
+		// Just a variable
 		else if (isFactorFollowSet()) {
 			return new VarExpression(id);
 		}
+
+		// Error
 		else {
 			throw new ParseException("Factor", linenum, lookahead);
 		}
 	}
 
+	// Parse the arguments for a function call
 	private ArrayList<Expression> parseArgs() throws LexException, ParseException {
+
 		ArrayList<Expression> ret = new ArrayList<Expression>();
 		int linenum = lex.getLineNum();
+
+		// Parse each argument and throw them in an arraylist
 		while (isFactorFirstSet()) {
 			ret.add(parseExpression());
 			Token lookahead = lex.getNextToken();
@@ -317,6 +380,9 @@ public class CMinusParser {
 			}
 			linenum = lex.getLineNum();
 		}
+
+		// Check if arguments are terminated with right paren
+		// If not, error
 		Token lookahead = lex.viewNextToken();
 		Token.TokenType type = lookahead.getTokenType();
 		if (ret.isEmpty() && type == Token.TokenType.RIGHT_PAREN) {
