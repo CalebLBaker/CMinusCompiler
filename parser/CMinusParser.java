@@ -7,6 +7,44 @@ import java.io.IOException;
 
 public class CMinusParser {
 
+	/**
+	 * File-specific constructor
+	 * @param filename the name of the file to be parsed
+	 */
+	public CMinusParser(String filename) throws LexException, IOException {
+		if (filename != null) {
+			lex = new CMinusScanner(filename);
+		}
+		else {
+			lex = null;
+		}
+	}
+
+	/**
+	 * Unattached constructor
+	 */
+	public CMinusParser() throws LexException, IOException {
+		this(null);
+	}
+
+	/**
+	 * Parse the file the parser is currently attached to
+	 * @return the abstract syntax tree specified by the file
+	 */
+	public Program parse() {
+		return parseProgram();
+	}
+
+	/**
+	 * Parse a file specified by the parameter
+	 * @param filename the file to be parsed
+	 * @return the abstract syntax tree specified by the file
+	 */
+	public Program parse(String filename) throws LexException, IOException {
+		lex = new CMinusScanner(filename);
+		return parseProgram();
+	}
+
 	private CMinusScanner lex;
 
 	// Match a token
@@ -70,10 +108,10 @@ public class CMinusParser {
             Token.TokenType type = nextToken.getTokenType();
             Token.TokenType type2 = nextID.getTokenType();
             if(type2 == Token.TokenType.IDENTIFIER) {
-                throw new ParseException("Declaration", linenum, nextToken);  
+                throw new ParseException("Declaration", linenum, nextToken);
             }
             switch(type) {
-                case INT: 
+                case INT:
                     return parseDeclPrime((String) nextID.getTokenData());
                 case VOID:
                     Declaration decl = parseFunDeclPrime((String) nextID.getTokenData());
@@ -131,8 +169,26 @@ public class CMinusParser {
 		return null;
 	}
 
-	private ExpressionStatement parseExpressionStmt() {
-		return null;
+	// Parse an expression statement
+	private ExpressionStatement parseExpressionStmt() throws LexException, ParseException {
+
+		// Get lookahead token and line number
+		Token lookahead = lex.viewNextToken();
+		Token.TokenType type = lookahead.getTokenType();
+		int linenum = lex.getLineNum();
+
+		// Parse
+		if (isFactorFirstSet()) {
+			Expression e = parseExpression();
+			return new ExpressionStatement(e);
+		}
+		else if (type == Token.TokenType.	SEMI_COLON) {
+			match(Token.TokenType.SEMI_COLON);
+			return new ExpressionStatement(null);
+		}
+		else {
+			throw new ParseException("Expression Statement", linenum, lookahead);
+		}
 	}
 
 	private SelectionStatement parseSelectionStmt() {
@@ -143,8 +199,28 @@ public class CMinusParser {
 		return null;
 	}
 
-	private ReturnStatement parseReturnStmt() {
-		return null;
+	// Parse a return statement
+	private ReturnStatement parseReturnStmt() throws LexException, ParseException {
+
+		match(Token.TokenType.RETURN);
+
+		// Get lookahead token and line number
+		Token lookahead = lex.viewNextToken();
+		Token.TokenType type = lookahead.getTokenType();
+		int linenum = lex.getLineNum();
+
+		// Parse return value
+		if (isFactorFirstSet()) {
+			Expression retVal = parseExpression();
+			return new ReturnStatement(retVal);
+		}
+		else if (type == Token.TokenType.SEMI_COLON) {
+			match(Token.TokenType.SEMI_COLON);
+			return new ReturnStatement(null);
+		}
+		else {
+			throw new ParseException("Return Statement", linenum, lookahead);
+		}
 	}
 
 	// Parse an expression
