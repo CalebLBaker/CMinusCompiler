@@ -207,6 +207,9 @@ public class CMinusParser {
                         // Remove brackets and make new variable declaration node
                         match(Token.TokenType.LEFT_BRACKET);
 			Token num = lex.getNextToken();
+			if (num.getTokenType() != Token.TokenType.NUMBER) {
+				throw new ParseException("Number", linenum, num);
+			}
 			match(Token.TokenType.RIGHT_BRACKET);
                         match(Token.TokenType.SEMI_COLON);
                         return new VariableDeclaration(id, (int)num.getTokenData());
