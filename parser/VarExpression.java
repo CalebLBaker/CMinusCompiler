@@ -3,7 +3,7 @@
 *
 * @author Caleb Baker
 * @version 1.0
-* File: NumExpression.java
+* File: VarExpression.java
 * Created: Spring 2018
 * (C)Copyright Cedarville University, its Computer Science faculty, and the
 * authors. All rights reserved.
