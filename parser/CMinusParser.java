@@ -175,6 +175,7 @@ public class CMinusParser {
                     if(type2 != Token.TokenType.IDENTIFIER) {
                         throw new ParseException("Declaration", linenum, nextToken);
                     }
+                    // Parse recursively 
                     return parseDeclPrime((String) nextToken.getTokenData(), type);
                 case VOID:
                     //Get next Token
@@ -183,6 +184,7 @@ public class CMinusParser {
                     if(type2 != Token.TokenType.IDENTIFIER) {
                         throw new ParseException("Declaration", linenum, nextToken);
                     }
+                    // Parse recursively 
                     return parseFunDeclPrime((String) nextToken.getTokenData(), type);
                 default:
                     //Error
@@ -191,19 +193,24 @@ public class CMinusParser {
 	}
 
 	private Declaration parseDeclPrime(String id, Token.TokenType type) throws LexException, ParseException {
+                //View next Token and get line number
                 int linenum = lex.getLineNum();
                 Token nextToken = lex.viewNextToken();
                 Token.TokenType tokenType = nextToken.getTokenType();
+                
                 switch(tokenType) {
                     case SEMI_COLON:
+                        // Remove semicolon and parse recursively
                         match(Token.TokenType.SEMI_COLON);
                         return new VariableDeclaration(id);
                     case LEFT_BRACKET:
+                        // Remove brackets and make new variable declaration node
                         match(Token.TokenType.LEFT_BRACKET);
 			Token num = lex.getNextToken();
 			match(Token.TokenType.RIGHT_BRACKET);
                         return new VariableDeclaration(id, (int)num.getTokenData());
                     case LEFT_PAREN:
+                        // parse recursively
                         return parseFunDeclPrime(id, type);
                     default:
                         throw new ParseException("DeclPrime", linenum, nextToken);
