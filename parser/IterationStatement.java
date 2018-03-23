@@ -3,7 +3,7 @@
 *
 * @author Caleb Baker
 * @version 1.0
-* File: ReturnStatement.java
+* File: IterationStatement.java
 * Created: Spring 2018
 * (C)Copyright Cedarville University, its Computer Science faculty, and the
 * authors. All rights reserved.
@@ -16,9 +16,10 @@ package parser;
 
 public class IterationStatement extends Statement {
 
-	// Index if variable is an array. Null otherwise.
+	// The looping condition
 	private Expression condition;
 
+	// The loop body
 	private Statement body;
 
 	/**
