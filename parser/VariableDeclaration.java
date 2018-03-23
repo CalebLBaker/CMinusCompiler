@@ -5,10 +5,19 @@ public class VariableDeclaration extends Declaration {
     private Integer index;
 
     VariableDeclaration(String n) {
+        
+        // name of variable
         name = n;
+        
+        // index if it is an array, null otherwise 
         index = null;
     }
 
+    /**
+     * variable constructor
+     * @param n the name of the variable.
+     * @param i the index into an array.
+     */
     VariableDeclaration(String n, Integer i) {
         name = n;
         index = i;
