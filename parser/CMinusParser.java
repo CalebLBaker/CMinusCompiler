@@ -1,3 +1,20 @@
+/**
+* This is a parser that parses the C- language
+*
+* @author Caleb Baker, Faith Trautmann
+* @version 1.0
+* File: CMinusParser.java
+* Created: Spring 2018
+* (C)Copyright Cedarville University, its Computer Science faculty, and the
+* authors. All rights reserved.
+*
+* Usage: java parser.CMinusParser inputFile
+* 		 Abstract syntax tree will be printed to stdin
+* Usage for if you want the tree in a file (might not work in Windows):
+*	java parser.CMinusParser inputFile > outputFile
+*
+*/
+
 package parser;
 import scanner.CMinusScanner;
 import scanner.Token;
