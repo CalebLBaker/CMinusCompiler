@@ -125,7 +125,7 @@ public class CMinusParser {
 			throw new ParseException("Program", 0, lookahead);
 		}
 
-		return new Program();	// This line needs to change
+		return new Program(decl);	// Return
 	}
 
 	private Declaration parseDeclaration() throws LexException, ParseException {
