@@ -134,6 +134,9 @@ public class CMinusParser {
 			match(Token.TokenType.RIGHT_BRACKET);
                         return new VariableDeclaration(id, (int)num.getTokenData());
                     case LEFT_PAREN:
+                        return parseFunDeclPrime(id, type);
+                    default: 
+                        throw new ParseException("DeclPrime", linenum, nextToken);  
                 }
 	}
 
