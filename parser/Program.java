@@ -39,12 +39,11 @@ public class Program {
 	 * Prints the node
 	 * @param tab how far to indent the node
 	 */
-	public void print(String tab) {
-		System.out.println(tab + "Program {");
-		String newTab = tab + "    ";
+	public void print() {
+		System.out.println("Program {");
 		for (Declaration d : decl) {
-			d.print(newTab);
+			d.print("    ");
 		}
-		System.out.println(tab + "}");
+		System.out.println("}");
 	}
 }

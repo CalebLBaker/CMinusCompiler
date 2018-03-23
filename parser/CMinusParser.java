@@ -8,6 +8,33 @@ import java.io.IOException;
 public class CMinusParser {
 
 	/**
+	 * Main method for parsing a file. Output is printed to standard out.
+	 * @param args Array whose first element is the input filename
+	 */
+	public static void main(String[] args) {
+		if (args.length == 0) {
+			System.out.println("You suck! We need a filename!");
+			return;
+		}
+		try {
+			CMinusParser parserFriend = new CMinusParser(args[1]);
+			Program tree = parserFriend.parse();
+			tree.print();
+		}
+		catch(IOException ex) {
+			System.out.println("Something went wrong involving file i/o.");
+			return;
+		}
+		catch(LexException ex) {
+			ex.printErrorMessage();
+			return;
+		}
+		catch(ParseException ex) {
+			ex.printErrorMessage();
+		}
+	}
+
+	/**
 	 * File-specific constructor
 	 * @param filename the name of the file to be parsed
 	 */
