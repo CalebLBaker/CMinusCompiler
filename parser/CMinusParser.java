@@ -115,8 +115,8 @@ public class CMinusParser {
                     return parseDeclPrime((String) nextID.getTokenData(), type);
                 case VOID:
                     return parseFunDeclPrime((String) nextID.getTokenData(), type);
-                default: 
-                    throw new ParseException("Declaration", linenum, nextToken);  
+                default:
+                    throw new ParseException("Declaration", linenum, nextToken);
             }
 	}
 
@@ -125,7 +125,7 @@ public class CMinusParser {
                 Token nextToken = lex.viewNextToken();
                 Token.TokenType tokenType = nextToken.getTokenType();
                 switch(tokenType) {
-                    case SEMI_COLON: 
+                    case SEMI_COLON:
                         match(Token.TokenType.SEMI_COLON);
                         return new VariableDeclaration(id);
                     case LEFT_BRACKET:
@@ -135,8 +135,8 @@ public class CMinusParser {
                         return new VariableDeclaration(id, (int)num.getTokenData());
                     case LEFT_PAREN:
                         return parseFunDeclPrime(id, type);
-                    default: 
-                        throw new ParseException("DeclPrime", linenum, nextToken);  
+                    default:
+                        throw new ParseException("DeclPrime", linenum, nextToken);
                 }
 	}
 
@@ -148,10 +148,10 @@ public class CMinusParser {
                     ArrayList<Parameter> params = parseParams();
                     match(Token.TokenType.RIGHT_PAREN);
                     CompoundStatement statement = parseCompoundStmt();
-                    return new FunctionDeclaration(type, id, params, statement);                   
+                    return new FunctionDeclaration(type, id, params, statement);
                 }
                 else {
-                    throw new ParseException("DeclPrime", linenum, nextToken);  
+                    throw new ParseException("DeclPrime", linenum, nextToken);
                 }
 	}
 
@@ -557,6 +557,3 @@ public class CMinusParser {
 		}
 	}
 }
-                        return parseFunDeclPrime(id, type);
-                    default: 
-                        throw new ParseException("DeclPrime", linenum, nextToken);  
