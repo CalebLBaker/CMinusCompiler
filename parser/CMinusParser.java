@@ -166,7 +166,7 @@ public class CMinusParser {
             Token nextToken = lex.getNextToken();
             Token.TokenType type = nextToken.getTokenType();
             Token.TokenType type2 = null;
-            
+
             switch(type) {
                 case INT:
                     //Get next Token
@@ -697,7 +697,7 @@ public class CMinusParser {
 		// Parse each argument and throw them in an arraylist
 		while (isFactorFirstSet()) {
 			ret.add(parseExpression());
-			Token lookahead = lex.getNextToken();
+			Token lookahead = lex.viewNextToken();
 			Token.TokenType type = lookahead.getTokenType();
 			switch (type) {
 				case COMMA : {
@@ -710,6 +710,7 @@ public class CMinusParser {
 					throw new ParseException("Args", linenum, lookahead);
 				}
 			}
+			lookahead = lex.getNextToken();
 			linenum = lex.getLineNum();
 		}
 
