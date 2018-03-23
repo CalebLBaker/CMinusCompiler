@@ -97,6 +97,14 @@ public class CMinusParser {
 		return isTermFollowSet() || isMulop();
 	}
 
+	// Check if the next token is in the first set of statement
+	private boolean isStatementFirstSet() {
+		Token.TokenType t = lex.viewNextToken().getTokenType();
+		return isFactorFirstSet() || t == Token.TokenType.SEMI_COLON
+			|| t == Token.TokenType.LEFT_BRACE || t == Token.TokenType.RETURN
+			|| t == Token.TokenType.IF || t == Token.TokenType.WHILE;
+	}
+
 	private Program parseProgram() {
 		return null;
 	}
@@ -171,8 +179,28 @@ public class CMinusParser {
 		return null;
 	}
 
-	private CompoundStatement parseCompoundStmt() {
-		return null;
+	// Parse a compound statement
+	private CompoundStatement parseCompoundStmt() throws LexException, ParseException {
+
+		match(Token.TokenType.LEFT_BRACE);	// Opening brace
+
+		// Local declarations
+		Token lookahead = lex.viewNextToken();
+		ArrayList<VariableDeclaration> decl = new ArrayList<VariableDeclaration>();
+		while (lookahead.getTokenType() == Token.TokenType.INT) {
+			decl.add(parseVarDecl());
+			lookahead = lex.viewNextToken();
+		}
+
+		// Statements
+		ArrayList<Statement> stmt = new ArrayList<Statement>();
+		while (isStatementFirstSet()) {
+			stmt.add(parseStatement());
+		}
+
+		match(Token.TokenType.RIGHT_BRACE);	// Closing brace
+
+		return new CompoundStatement(decl, stmt);	// Return
 	}
 
 	// Parse a statement
@@ -248,10 +276,7 @@ public class CMinusParser {
 		}
 
 		// No else
-		else if (isFactorFirstSet() || type == Token.TokenType.SEMI_COLON
-			|| type == Token.TokenType.LEFT_BRACE || type == Token.TokenType.RIGHT_BRACE
-			|| type == Token.TokenType.IF || type == Token.TokenType.ELSE
-			|| type == Token.TokenType.WHILE || type == Token.TokenType.RETURN) {
+		else if (isStatementFirstSet() || type == Token.TokenType.RIGHT_BRACE) {
 			return new SelectionStatement(condition, body);
 		}
 
