@@ -131,6 +131,12 @@ public class Token {
 			case DIVISION : {
 				return "/";
 			}
+			case LEFT_BRACE : {
+				return "{";
+			}
+			case RIGHT_BRACE : {
+				return "}";
+			}
 			case END_OF_FILE : {
 				return "EOF";
 			}

@@ -119,7 +119,7 @@ public class CMinusParser {
 	// Check if the next token is in the follow set of term
 	private boolean isTermFollowSet() {
 		Token.TokenType t = lex.viewNextToken().getTokenType();
-		return isAddop() || isRelOp() || t == Token.TokenType.SEMI_COLON
+		return isAddop() || isMulop() || isRelOp() || t == Token.TokenType.SEMI_COLON
 				|| t == Token.TokenType.COMMA || t == Token.TokenType.RIGHT_BRACKET
 				|| t == Token.TokenType.RIGHT_PAREN;
 	}
@@ -175,7 +175,7 @@ public class CMinusParser {
                     if(type2 != Token.TokenType.IDENTIFIER) {
                         throw new ParseException("Declaration", linenum, nextToken);
                     }
-                    // Parse recursively 
+                    // Parse recursively
                     return parseDeclPrime((String) nextToken.getTokenData());
                 case VOID:
                     //Get next Token
@@ -184,20 +184,20 @@ public class CMinusParser {
                     if(type2 != Token.TokenType.IDENTIFIER) {
                         throw new ParseException("Declaration", linenum, nextToken);
                     }
-                    // Parse recursively 
+                    // Parse recursively
                     return parseFunDeclPrime((String) nextToken.getTokenData(), type);
                 default:
                     //Error
                     throw new ParseException("Declaration", linenum, nextToken);
             }
 	}
-        
+
         //View next Token and get line number
 	private Declaration parseDeclPrime(String id) throws LexException, ParseException {
                 int linenum = lex.getLineNum();
                 Token nextToken = lex.viewNextToken();
                 Token.TokenType tokenType = nextToken.getTokenType();
-                
+
                 switch(tokenType) {
                     case SEMI_COLON:
                         // Remove semicolon and parse recursively
@@ -207,6 +207,9 @@ public class CMinusParser {
                         // Remove brackets and make new variable declaration node
                         match(Token.TokenType.LEFT_BRACKET);
 			Token num = lex.getNextToken();
+			if (num.getTokenType() != Token.TokenType.NUMBER) {
+				throw new ParseException("Number", linenum, num);
+			}
 			match(Token.TokenType.RIGHT_BRACKET);
                         match(Token.TokenType.SEMI_COLON);
                         return new VariableDeclaration(id, (int)num.getTokenData());
@@ -586,7 +589,7 @@ public class CMinusParser {
 
 		// If looking for a factor and there is a factor
 		// or if the factor was passed as a parameter and there is an operator
-		if (prime == null && isFactorFirstSet() || prime != null && isTermFollowSet()) {
+		if ((prime == null && isFactorFirstSet()) || (prime != null && isTermFollowSet())) {
 			Expression left = parseTerm(prime);
 			if (isAddop()) {
 				Token.TokenType operator = lex.getNextToken().getTokenType();
