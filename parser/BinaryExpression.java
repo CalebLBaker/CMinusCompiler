@@ -67,7 +67,7 @@ public class BinaryExpression extends Expression {
 	 * @param tab how far to indent the node
 	 */
 	public void print(String tab) {
-		System.out.print(tab + Token.toString(operator));
+		System.out.println(tab + Token.toString(operator));
 		tab += "    ";
 		lhs.print(tab);
 		rhs.print(tab);
