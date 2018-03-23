@@ -165,23 +165,27 @@ public class CMinusParser {
             int linenum = lex.getLineNum();
             Token nextToken = lex.getNextToken();
             Token.TokenType type = nextToken.getTokenType();
-
+            Token.TokenType type2 = null;
+            
             switch(type) {
                 case INT:
+                    //Get next Token
                     nextToken = lex.getNextToken();
-                    type = nextToken.getTokenType();
-                    if(type != Token.TokenType.IDENTIFIER) {
+                    type2 = nextToken.getTokenType();
+                    if(type2 != Token.TokenType.IDENTIFIER) {
                         throw new ParseException("Declaration", linenum, nextToken);
                     }
                     return parseDeclPrime((String) nextToken.getTokenData(), type);
                 case VOID:
+                    //Get next Token
                     nextToken = lex.getNextToken();
-                    type = nextToken.getTokenType();
-                    if(type != Token.TokenType.IDENTIFIER) {
+                    type2 = nextToken.getTokenType();
+                    if(type2 != Token.TokenType.IDENTIFIER) {
                         throw new ParseException("Declaration", linenum, nextToken);
                     }
                     return parseFunDeclPrime((String) nextToken.getTokenData(), type);
                 default:
+                    //Error
                     throw new ParseException("Declaration", linenum, nextToken);
             }
 	}
