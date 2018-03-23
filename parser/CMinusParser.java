@@ -176,7 +176,6 @@ public class CMinusParser {
                         throw new ParseException("Declaration", linenum, nextToken);
                     }
                     // Parse recursively 
-                    return parseDeclPrime((String) nextToken.getTokenData(), type);
                     return parseDeclPrime((String) nextToken.getTokenData());
                 case VOID:
                     //Get next Token
@@ -192,9 +191,8 @@ public class CMinusParser {
                     throw new ParseException("Declaration", linenum, nextToken);
             }
 	}
-
-	private Declaration parseDeclPrime(String id, Token.TokenType type) throws LexException, ParseException {
-                //View next Token and get line number
+        
+        //View next Token and get line number
 	private Declaration parseDeclPrime(String id) throws LexException, ParseException {
                 int linenum = lex.getLineNum();
                 Token nextToken = lex.viewNextToken();
@@ -210,10 +208,10 @@ public class CMinusParser {
                         match(Token.TokenType.LEFT_BRACKET);
 			Token num = lex.getNextToken();
 			match(Token.TokenType.RIGHT_BRACKET);
+                        match(Token.TokenType.SEMI_COLON);
                         return new VariableDeclaration(id, (int)num.getTokenData());
                     case LEFT_PAREN:
                         // parse recursively
-                        return parseFunDeclPrime(id, type);
                         return parseFunDeclPrime(id, Token.TokenType.INT);
                     default:
                         throw new ParseException("DeclPrime", linenum, nextToken);
