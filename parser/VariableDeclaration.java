@@ -2,15 +2,24 @@ package parser;
 
 public class VariableDeclaration extends Declaration {
     private String name;
-    private int index;
-    
+    private Integer index;
+
     VariableDeclaration(String n) {
         name = n;
-        index = -1;
+        index = null;
     }
-    
+
     VariableDeclaration(String n, int i) {
         name = n;
         index = i;
+    }
+
+    public void print(String tab) {
+        System.out.println(tab + "int");
+        tab += "    ";
+        System.out.println(tab + name);
+        if (index != null) {
+            System.out.println(tab + Integer.toString(index));
+        }
     }
 }

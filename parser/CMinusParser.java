@@ -8,6 +8,33 @@ import java.io.IOException;
 public class CMinusParser {
 
 	/**
+	 * Main method for parsing a file. Output is printed to standard out.
+	 * @param args Array whose first element is the input filename
+	 */
+	public static void main(String[] args) {
+		if (args.length == 0) {
+			System.out.println("You suck! We need a filename!");
+			return;
+		}
+		try {
+			CMinusParser parserFriend = new CMinusParser(args[1]);
+			Program tree = parserFriend.parse();
+			tree.print();
+		}
+		catch(IOException ex) {
+			System.out.println("Something went wrong involving file i/o.");
+			return;
+		}
+		catch(LexException ex) {
+			ex.printErrorMessage();
+			return;
+		}
+		catch(ParseException ex) {
+			ex.printErrorMessage();
+		}
+	}
+
+	/**
 	 * File-specific constructor
 	 * @param filename the name of the file to be parsed
 	 */
@@ -31,7 +58,7 @@ public class CMinusParser {
 	 * Parse the file the parser is currently attached to
 	 * @return the abstract syntax tree specified by the file
 	 */
-	public Program parse() {
+	public Program parse() throws LexException, ParseException {
 		return parseProgram();
 	}
 
@@ -40,7 +67,7 @@ public class CMinusParser {
 	 * @param filename the file to be parsed
 	 * @return the abstract syntax tree specified by the file
 	 */
-	public Program parse(String filename) throws LexException, IOException {
+	public Program parse(String filename) throws LexException, IOException, ParseException {
 		lex = new CMinusScanner(filename);
 		return parseProgram();
 	}
@@ -97,8 +124,35 @@ public class CMinusParser {
 		return isTermFollowSet() || isMulop();
 	}
 
-	private Program parseProgram() {
-		return null;
+	// Check if the next token is in the first set of statement
+	private boolean isStatementFirstSet() {
+		Token.TokenType t = lex.viewNextToken().getTokenType();
+		return isFactorFirstSet() || t == Token.TokenType.SEMI_COLON
+			|| t == Token.TokenType.LEFT_BRACE || t == Token.TokenType.RETURN
+			|| t == Token.TokenType.IF || t == Token.TokenType.WHILE;
+	}
+
+	// Parse the entire program
+	private Program parseProgram() throws LexException, ParseException {
+
+		// Throw all of the declarations into an array list
+		ArrayList<Declaration> decl = new ArrayList<Declaration>();
+		Token lookahead = lex.viewNextToken();
+		Token.TokenType type = lookahead.getTokenType();
+		while (type == Token.TokenType.INT || type == Token.TokenType.VOID) {
+			decl.add(parseDeclaration());
+			lookahead = lex.viewNextToken();
+			type = lookahead.getTokenType();
+		}
+
+		match(Token.TokenType.END_OF_FILE);	// Make sure the next token is EOF
+
+		// Make sure this wasn't just an empty file or all comments
+		if (decl.isEmpty()) {
+			throw new ParseException("Program", 0, lookahead);
+		}
+
+		return new Program(decl);	// Return
 	}
 
 	private Declaration parseDeclaration() throws LexException, ParseException {
@@ -221,10 +275,31 @@ public class CMinusParser {
 		return params;
 	}
 
-	private CompoundStatement parseCompoundStmt() {
-		return null;
+	// Parse a compound statement
+	private CompoundStatement parseCompoundStmt() throws LexException, ParseException {
+
+		match(Token.TokenType.LEFT_BRACE);	// Opening brace
+
+		// Local declarations
+		Token lookahead = lex.viewNextToken();
+		ArrayList<VariableDeclaration> decl = new ArrayList<VariableDeclaration>();
+		while (lookahead.getTokenType() == Token.TokenType.INT) {
+			decl.add(parseVarDecl());
+			lookahead = lex.viewNextToken();
+		}
+
+		// Statements
+		ArrayList<Statement> stmt = new ArrayList<Statement>();
+		while (isStatementFirstSet()) {
+			stmt.add(parseStatement());
+		}
+
+		match(Token.TokenType.RIGHT_BRACE);	// Closing brace
+
+		return new CompoundStatement(decl, stmt);	// Return
 	}
 
+	// Parse a statement
 	private Statement parseStatement() throws LexException, ParseException {
 
 		// Get lookahead token and line number
@@ -297,10 +372,7 @@ public class CMinusParser {
 		}
 
 		// No else
-		else if (isFactorFirstSet() || type == Token.TokenType.SEMI_COLON
-			|| type == Token.TokenType.LEFT_BRACE || type == Token.TokenType.RIGHT_BRACE
-			|| type == Token.TokenType.IF || type == Token.TokenType.ELSE
-			|| type == Token.TokenType.WHILE || type == Token.TokenType.RETURN) {
+		else if (isStatementFirstSet() || type == Token.TokenType.RIGHT_BRACE) {
 			return new SelectionStatement(condition, body);
 		}
 
