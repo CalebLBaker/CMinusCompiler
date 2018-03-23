@@ -14,6 +14,10 @@ public class VariableDeclaration extends Declaration {
         index = i;
     }
 
+    /**
+     * Prints the current node of the tree
+     * @param tab the current level of indentation
+     */
     public void print(String tab) {
         System.out.println(tab + "int");
         tab += "    ";
