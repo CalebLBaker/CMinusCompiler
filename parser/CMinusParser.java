@@ -210,7 +210,35 @@ public class CMinusParser {
 	}
 
 	private VariableDeclaration parseVarDecl() throws LexException, ParseException {
-                return null;
+                int linenum = lex.getLineNum();
+                match(Token.TokenType.INT);
+                Token nextToken = lex.getNextToken();
+                Token.TokenType tokenType = nextToken.getTokenType();
+                
+                if (tokenType == Token.TokenType.IDENTIFIER) {
+                    String id = (String)nextToken.getTokenData();                  
+                    Integer index = null;
+                    nextToken = lex.viewNextToken();
+                    tokenType = nextToken.getTokenType();      
+                    
+                    if(tokenType == Token.TokenType.LEFT_BRACKET) {
+                        match(Token.TokenType.LEFT_BRACKET);
+                        nextToken = lex.getNextToken();
+                        tokenType = nextToken.getTokenType();
+                        if(tokenType == Token.TokenType.NUMBER) {
+                            index = (Integer)nextToken.getTokenData();
+                        }
+                        else {
+                            throw new ParseException("VarDecl", linenum, nextToken);
+                        }
+                        match(Token.TokenType.RIGHT_BRACKET);
+                    }
+                    match(Token.TokenType.SEMI_COLON);
+                    return new VariableDeclaration(id, index);
+                }
+                else {
+                    throw new ParseException("VarDecl", linenum, nextToken);
+                }
 	}
 
 	private ArrayList<Parameter> parseParams() throws LexException, ParseException{
@@ -234,7 +262,7 @@ public class CMinusParser {
                 match(Token.TokenType.INT);
                 Token nextToken = lex.getNextToken();
                 Token.TokenType tokenType = nextToken.getTokenType();
-                if (tokenType == Token.TokenType.INT) {
+                if (tokenType == Token.TokenType.IDENTIFIER) {
                     String id = (String)nextToken.getTokenData();
                     boolean isArray = false;
                     nextToken = lex.viewNextToken();
