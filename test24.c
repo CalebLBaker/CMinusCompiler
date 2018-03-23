@@ -15,9 +15,9 @@ int main(void) {
 	int taco[12];
 	int y;
 	fun();
-	x = 5 + 17;
+	x = 5 int + 17;
 	5 + 2;
-	taco[(3 * add(x, y) + 3 > 12) + taco[4]] + 2;
+	taco[3] + 2;
 	(x * y) + 13;
 	if (x > 12 * 2) {
 		int z;
