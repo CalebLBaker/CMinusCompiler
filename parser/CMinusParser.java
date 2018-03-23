@@ -192,8 +192,9 @@ public class CMinusParser {
             }
 	}
 
-        //View next Token and get line number
+
 	private Declaration parseDeclPrime(String id) throws LexException, ParseException {
+                // Get next Token and get line number
                 int linenum = lex.getLineNum();
                 Token nextToken = lex.viewNextToken();
                 Token.TokenType tokenType = nextToken.getTokenType();
@@ -222,10 +223,13 @@ public class CMinusParser {
 	}
 
 	private FunctionDeclaration parseFunDeclPrime(String id, Token.TokenType type) throws LexException, ParseException  {
+                // Get next Token and get line number
 		int linenum = lex.getLineNum();
                 Token nextToken = lex.getNextToken();
                 Token.TokenType tokenType = nextToken.getTokenType();
+                
                 if(tokenType == Token.TokenType.LEFT_PAREN) {
+                    // Parse param list and compound statement recursively
                     ArrayList<Parameter> params = parseParams();
                     match(Token.TokenType.RIGHT_PAREN);
                     CompoundStatement statement = parseCompoundStmt();
@@ -237,7 +241,10 @@ public class CMinusParser {
 	}
 
 	private VariableDeclaration parseVarDecl() throws LexException, ParseException {
+                // get line number
                 int linenum = lex.getLineNum();
+                
+                // munch int and get next token
                 match(Token.TokenType.INT);
                 Token nextToken = lex.getNextToken();
                 Token.TokenType tokenType = nextToken.getTokenType();
@@ -247,7 +254,8 @@ public class CMinusParser {
                     Integer index = null;
                     nextToken = lex.viewNextToken();
                     tokenType = nextToken.getTokenType();
-
+                    
+                    // If the variable is an array parse the index part
                     if(tokenType == Token.TokenType.LEFT_BRACKET) {
                         match(Token.TokenType.LEFT_BRACKET);
                         nextToken = lex.getNextToken();
@@ -260,6 +268,8 @@ public class CMinusParser {
                         }
                         match(Token.TokenType.RIGHT_BRACKET);
                     }
+                    
+                    //munch semicolon an return new variable decl object
                     match(Token.TokenType.SEMI_COLON);
                     return new VariableDeclaration(id, index);
                 }
@@ -269,9 +279,12 @@ public class CMinusParser {
 	}
 
 	private ArrayList<Parameter> parseParams() throws LexException, ParseException{
+                // View next Token and get line number
 		int linenum = lex.getLineNum();
                 Token nextToken = lex.viewNextToken();
                 Token.TokenType tokenType = nextToken.getTokenType();
+                
+                // if there are parameters parse them otherwise return null 
                 if(tokenType == Token.TokenType.INT) {
                     return parseParamList();
                 }
@@ -285,20 +298,29 @@ public class CMinusParser {
 	}
 
 	private Parameter parseParam() throws LexException, ParseException {
+                // Get line number and munch first int
                 int linenum = lex.getLineNum();
                 match(Token.TokenType.INT);
+                
+                // Get next token
                 Token nextToken = lex.getNextToken();
                 Token.TokenType tokenType = nextToken.getTokenType();
+                
                 if (tokenType == Token.TokenType.IDENTIFIER) {
                     String id = (String)nextToken.getTokenData();
                     boolean isArray = false;
+                    
+                    // view next token
                     nextToken = lex.viewNextToken();
                     tokenType = nextToken.getTokenType();
+                    
+                    // if the param is an array munch brackets 
                     if(tokenType == Token.TokenType.LEFT_BRACKET) {
                         match(Token.TokenType.LEFT_BRACKET);
                         match(Token.TokenType.RIGHT_BRACKET);
                         isArray = true;
                     }
+                   // Make new parameter node and return it
                     return new Parameter(id, isArray);
                 }
                 else {
@@ -307,9 +329,12 @@ public class CMinusParser {
 	}
 
 	private ArrayList<Parameter> parseParamList() throws LexException, ParseException  {
+                // Get linenum and view next token
                 int linenum = lex.getLineNum();
                 Token nextToken = lex.viewNextToken();
                 Token.TokenType tokenType = nextToken.getTokenType();
+                
+                // make array list for the params and add the first parsed param to it
                 ArrayList<Parameter> params = new ArrayList<Parameter>();
                 if (tokenType == Token.TokenType.INT) {
                     params.add(parseParam());
@@ -317,10 +342,12 @@ public class CMinusParser {
                 else {
                     throw new ParseException("ParamList", linenum, nextToken);
                 }
-
+                
+                // view next token
                 nextToken = lex.viewNextToken();
                 tokenType = nextToken.getTokenType();
 
+                // while there are still params parse them and add them to the array list 
                 while(tokenType == Token.TokenType.COMMA) {
                     match(Token.TokenType.COMMA);
                     params.add(parseParam());
