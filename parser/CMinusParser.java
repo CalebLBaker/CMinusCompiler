@@ -166,7 +166,7 @@ public class CMinusParser {
             Token nextToken = lex.getNextToken();
             Token.TokenType type = nextToken.getTokenType();
             Token.TokenType type2 = null;
-            
+
             switch(type) {
                 case INT:
                     //Get next Token
@@ -177,6 +177,7 @@ public class CMinusParser {
                     }
                     // Parse recursively 
                     return parseDeclPrime((String) nextToken.getTokenData(), type);
+                    return parseDeclPrime((String) nextToken.getTokenData());
                 case VOID:
                     //Get next Token
                     nextToken = lex.getNextToken();
@@ -194,6 +195,7 @@ public class CMinusParser {
 
 	private Declaration parseDeclPrime(String id, Token.TokenType type) throws LexException, ParseException {
                 //View next Token and get line number
+	private Declaration parseDeclPrime(String id) throws LexException, ParseException {
                 int linenum = lex.getLineNum();
                 Token nextToken = lex.viewNextToken();
                 Token.TokenType tokenType = nextToken.getTokenType();
@@ -212,6 +214,7 @@ public class CMinusParser {
                     case LEFT_PAREN:
                         // parse recursively
                         return parseFunDeclPrime(id, type);
+                        return parseFunDeclPrime(id, Token.TokenType.INT);
                     default:
                         throw new ParseException("DeclPrime", linenum, nextToken);
                 }
@@ -704,7 +707,7 @@ public class CMinusParser {
 		// Parse each argument and throw them in an arraylist
 		while (isFactorFirstSet()) {
 			ret.add(parseExpression());
-			Token lookahead = lex.getNextToken();
+			Token lookahead = lex.viewNextToken();
 			Token.TokenType type = lookahead.getTokenType();
 			switch (type) {
 				case COMMA : {
@@ -717,6 +720,7 @@ public class CMinusParser {
 					throw new ParseException("Args", linenum, lookahead);
 				}
 			}
+			lookahead = lex.getNextToken();
 			linenum = lex.getLineNum();
 		}
 

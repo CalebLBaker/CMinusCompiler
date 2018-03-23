@@ -68,7 +68,7 @@ public class SelectionStatement extends Statement {
 	 */
 	public void print(String tab) {
 		System.out.println(tab + "if");
-		String newTab = "    ";
+		String newTab = tab + "    ";
 		condition.print(newTab);
 		body.print(newTab);
 		if (elsePart != null) {
