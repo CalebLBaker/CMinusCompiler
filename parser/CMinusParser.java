@@ -158,19 +158,26 @@ public class CMinusParser {
 	}
 
 	private Declaration parseDeclaration() throws LexException, ParseException {
+            // Get next token and line number
             int linenum = lex.getLineNum();
             Token nextToken = lex.getNextToken();
-            Token nextID = lex.getNextToken();
             Token.TokenType type = nextToken.getTokenType();
-            Token.TokenType type2 = nextID.getTokenType();
-            if(type2 != Token.TokenType.IDENTIFIER) {
-                throw new ParseException("Declaration", linenum, nextToken);
-            }
+
             switch(type) {
                 case INT:
-                    return parseDeclPrime((String) nextID.getTokenData(), type);
+                    nextToken = lex.getNextToken();
+                    type = nextToken.getTokenType();
+                    if(type != Token.TokenType.IDENTIFIER) {
+                        throw new ParseException("Declaration", linenum, nextToken);
+                    }
+                    return parseDeclPrime((String) nextToken.getTokenData(), type);
                 case VOID:
-                    return parseFunDeclPrime((String) nextID.getTokenData(), type);
+                    nextToken = lex.getNextToken();
+                    type = nextToken.getTokenType();
+                    if(type != Token.TokenType.IDENTIFIER) {
+                        throw new ParseException("Declaration", linenum, nextToken);
+                    }
+                    return parseFunDeclPrime((String) nextToken.getTokenData(), type);
                 default:
                     throw new ParseException("Declaration", linenum, nextToken);
             }
