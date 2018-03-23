@@ -142,7 +142,7 @@ public class CMinusParser {
 
 	private FunctionDeclaration parseFunDeclPrime(String id, Token.TokenType type) throws LexException, ParseException  {
 		int linenum = lex.getLineNum();
-                Token nextToken = lex.viewNextToken();
+                Token nextToken = lex.getNextToken();
                 Token.TokenType tokenType = nextToken.getTokenType();
                 if(tokenType == Token.TokenType.LEFT_PAREN) {
                     ArrayList<Parameter> params = parseParams();
@@ -151,24 +151,74 @@ public class CMinusParser {
                     return new FunctionDeclaration(type, id, params, statement);
                 }
                 else {
-                    throw new ParseException("DeclPrime", linenum, nextToken);
+                    throw new ParseException("FunDeclPrime", linenum, nextToken);
                 }
 	}
 
-	private VariableDeclaration parseVarDecl() {
-		return null;
+	private Declaration parseVarDecl() throws LexException, ParseException {
+                return null;
 	}
 
-	private ArrayList<Parameter> parseParams() {
-		return null;
+	private ArrayList<Parameter> parseParams() throws LexException, ParseException{
+		int linenum = lex.getLineNum();
+                Token nextToken = lex.viewNextToken();
+                Token.TokenType tokenType = nextToken.getTokenType();
+                if(tokenType == Token.TokenType.INT) {
+                    return parseParamList();
+                }
+                else if (tokenType == Token.TokenType.VOID) {
+                    match(Token.TokenType.VOID);
+                    return null;
+                }
+                else {
+                    throw new ParseException("Params", linenum, nextToken);
+                }
 	}
 
-	private Parameter parseParam() {
-		return null;
+	private Parameter parseParam() throws LexException, ParseException {
+                int linenum = lex.getLineNum();
+                match(Token.TokenType.INT);
+                Token nextToken = lex.getNextToken();
+                Token.TokenType tokenType = nextToken.getTokenType();
+                if (tokenType == Token.TokenType.INT) {
+                    String id = (String)nextToken.getTokenData();
+                    boolean isArray = false;
+                    nextToken = lex.viewNextToken();
+                    tokenType = nextToken.getTokenType();
+                    if(tokenType == Token.TokenType.LEFT_BRACKET) {
+                        match(Token.TokenType.LEFT_BRACKET);
+                        match(Token.TokenType.RIGHT_BRACKET);
+                        isArray = true;
+                    }
+                    return new Parameter(id, isArray);
+                }
+                else {
+                    throw new ParseException("Param", linenum, nextToken);
+                }
 	}
 
-	private ArrayList<Parameter> parseParamList() {
-		return null;
+	private ArrayList<Parameter> parseParamList() throws LexException, ParseException  {
+                int linenum = lex.getLineNum();
+                Token nextToken = lex.viewNextToken();
+                Token.TokenType tokenType = nextToken.getTokenType();
+                ArrayList<Parameter> params = new ArrayList<Parameter>();
+                if (tokenType == Token.TokenType.INT) {
+                    params.add(parseParam());
+                }
+                else {
+                    throw new ParseException("ParamList", linenum, nextToken);
+                }
+                
+                nextToken = lex.viewNextToken();
+                tokenType = nextToken.getTokenType();
+                
+                while(tokenType == Token.TokenType.COMMA) {
+                    match(Token.TokenType.COMMA);
+                    params.add(parseParam());
+                    nextToken = lex.viewNextToken();
+                    tokenType = nextToken.getTokenType();
+                }         
+		return params;
 	}
 
 	private CompoundStatement parseCompoundStmt() {
