@@ -165,8 +165,31 @@ public class CMinusParser {
 		return null;
 	}
 
-	private Statement parseStatement() {
-		return null;
+	private Statement parseStatement() throws LexException, ParseException {
+
+		// Get lookahead token and line number
+		Token lookahead = lex.viewNextToken();
+		Token.TokenType type = lookahead.getTokenType();
+		int linenum = lex.getLineNum();
+
+		if (isFactorFirstSet() || type == Token.TokenType.SEMI_COLON) {
+			return parseExpressionStmt();
+		}
+		else if (type == Token.TokenType.LEFT_BRACE) {
+			return parseCompoundStmt();
+		}
+		else if (type == Token.TokenType.IF) {
+			return parseSelectionStmt();
+		}
+		else if (type == Token.TokenType.WHILE) {
+			return parseIterationStmt();
+		}
+		else if (type == Token.TokenType.RETURN) {
+			return parseReturnStmt();
+		}
+		else {
+			throw new ParseException("Statement", linenum, lookahead);
+		}
 	}
 
 	// Parse an expression statement
@@ -182,7 +205,7 @@ public class CMinusParser {
 			Expression e = parseExpression();
 			return new ExpressionStatement(e);
 		}
-		else if (type == Token.TokenType.	SEMI_COLON) {
+		else if (type == Token.TokenType.SEMI_COLON) {
 			match(Token.TokenType.SEMI_COLON);
 			return new ExpressionStatement(null);
 		}
