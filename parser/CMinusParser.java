@@ -31,7 +31,7 @@ public class CMinusParser {
 	 * Parse the file the parser is currently attached to
 	 * @return the abstract syntax tree specified by the file
 	 */
-	public Program parse() {
+	public Program parse() throws LexException, ParseException {
 		return parseProgram();
 	}
 
@@ -40,7 +40,7 @@ public class CMinusParser {
 	 * @param filename the file to be parsed
 	 * @return the abstract syntax tree specified by the file
 	 */
-	public Program parse(String filename) throws LexException, IOException {
+	public Program parse(String filename) throws LexException, IOException, ParseException {
 		lex = new CMinusScanner(filename);
 		return parseProgram();
 	}
@@ -105,8 +105,27 @@ public class CMinusParser {
 			|| t == Token.TokenType.IF || t == Token.TokenType.WHILE;
 	}
 
-	private Program parseProgram() {
-		return null;
+	// Parse the entire program
+	private Program parseProgram() throws LexException, ParseException {
+
+		// Throw all of the declarations into an array list
+		ArrayList<Declaration> decl = new ArrayList<Declaration>();
+		Token lookahead = lex.viewNextToken();
+		Token.TokenType type = lookahead.getTokenType();
+		while (type == Token.TokenType.INT || type == Token.TokenType.VOID) {
+			decl.add(parseDeclaration());
+			lookahead = lex.viewNextToken();
+			type = lookahead.getTokenType();
+		}
+
+		match(Token.TokenType.END_OF_FILE);	// Make sure the next token is EOF
+
+		// Make sure this wasn't just an empty file or all comments
+		if (decl.isEmpty()) {
+			throw new ParseException("Program", 0, lookahead);
+		}
+
+		return new Program();	// This line needs to change
 	}
 
 	private Declaration parseDeclaration() throws LexException, ParseException {
