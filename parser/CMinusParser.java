@@ -4,6 +4,7 @@ import scanner.Token;
 import scanner.LexException;
 import java.util.ArrayList;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class CMinusParser {
 
@@ -12,12 +13,13 @@ public class CMinusParser {
 	 * @param args Array whose first element is the input filename
 	 */
 	public static void main(String[] args) {
-		if (args.length == 0) {
-			System.out.println("You suck! We need a filename!");
-			return;
-		}
+//		if (args.length == 0) {
+//			System.out.println("You suck! We need a filename!");
+//			return;
+//		}
 		try {
-			CMinusParser parserFriend = new CMinusParser(args[0]);
+                        Scanner in = new Scanner(System.in);
+			CMinusParser parserFriend = new CMinusParser(in.nextLine());
 			Program tree = parserFriend.parse();
 			tree.print();
 		}

@@ -9,7 +9,7 @@ public class VariableDeclaration extends Declaration {
         index = null;
     }
 
-    VariableDeclaration(String n, int i) {
+    VariableDeclaration(String n, Integer i) {
         name = n;
         index = i;
     }
