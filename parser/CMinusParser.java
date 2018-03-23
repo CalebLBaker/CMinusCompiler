@@ -175,6 +175,7 @@ public class CMinusParser {
 		return null;
 	}
 
+	// Parse a statement
 	private Statement parseStatement() throws LexException, ParseException {
 
 		// Get lookahead token and line number
