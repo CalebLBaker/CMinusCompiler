@@ -209,7 +209,7 @@ public class CMinusParser {
                 }
 	}
 
-	private Declaration parseVarDecl() throws LexException, ParseException {
+	private VariableDeclaration parseVarDecl() throws LexException, ParseException {
                 return null;
 	}
 
@@ -262,16 +262,16 @@ public class CMinusParser {
                 else {
                     throw new ParseException("ParamList", linenum, nextToken);
                 }
-                
+
                 nextToken = lex.viewNextToken();
                 tokenType = nextToken.getTokenType();
-                
+
                 while(tokenType == Token.TokenType.COMMA) {
                     match(Token.TokenType.COMMA);
                     params.add(parseParam());
                     nextToken = lex.viewNextToken();
                     tokenType = nextToken.getTokenType();
-                }         
+                }
 		return params;
 	}
 
