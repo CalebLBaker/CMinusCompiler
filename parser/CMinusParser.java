@@ -13,13 +13,16 @@ public class CMinusParser {
 	 * @param args Array whose first element is the input filename
 	 */
 	public static void main(String[] args) {
-//		if (args.length == 0) {
-//			System.out.println("You suck! We need a filename!");
-//			return;
-//		}
+		String filename;
+		if (args.length == 1) {
+			filename = args[0];
+		}
+		else {
+			Scanner in = new Scanner(System.in);
+			filename = in.nextLine();
+		}
 		try {
-                        Scanner in = new Scanner(System.in);
-			CMinusParser parserFriend = new CMinusParser(in.nextLine());
+			CMinusParser parserFriend = new CMinusParser(filename);
 			Program tree = parserFriend.parse();
 			tree.print();
 		}
