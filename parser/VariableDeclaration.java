@@ -1,3 +1,17 @@
+/**
+* This is the variable declaration class for the c- parser
+*
+* @author Caleb Baker, Faith Trautmann
+* @version 1.0
+* File: VariableDeclaration.java
+* Created: Spring 2018
+* (C)Copyright Cedarville University, its Computer Science faculty, and the
+* authors. All rights reserved.
+*
+* This class defines a variable declaration for use in the c- parser. It inherits
+* from Declaration and is not expected to be inherited from. 
+*
+*/
 package parser;
 
 public class VariableDeclaration extends Declaration {

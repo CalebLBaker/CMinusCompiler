@@ -1,3 +1,17 @@
+/**
+* Defines a function declaration class for the c- parser
+*
+* @author Caleb Baker, Faith Trautmann
+* @version 1.0
+* File: FunctionDeclaration.java
+* Created: Spring 2018
+* (C)Copyright Cedarville University, its Computer Science faculty, and the
+* authors. All rights reserved.
+*
+* This class defines a function declaration class for use in the c- parser. It 
+* inherits from Declaration and is not expected to inherit from any classes.
+*/
+
 package parser;
 import java.util.ArrayList;
 

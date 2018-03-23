@@ -1,3 +1,18 @@
+/**
+* This is the class that defines parameters for the c- parser
+*
+* @author Caleb Baker, Faith Trautmann
+* @version 1.0
+* File: Parameter.java
+* Created: Spring 2018
+* (C)Copyright Cedarville University, its Computer Science faculty, and the
+* authors. All rights reserved.
+*
+* This is the definition for the parameter class. It does not inherit from any 
+* classes nor is it expected to be inherited from.
+*
+*/
+
 package parser;
 
 public class Parameter {
