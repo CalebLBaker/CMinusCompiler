@@ -371,6 +371,7 @@ public class CMinusParser {
 		// Parse
 		if (isFactorFirstSet()) {
 			Expression e = parseExpression();
+			match(Token.TokenType.SEMI_COLON);
 			return new ExpressionStatement(e);
 		}
 		else if (type == Token.TokenType.SEMI_COLON) {
