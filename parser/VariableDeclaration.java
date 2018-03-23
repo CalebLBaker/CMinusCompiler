@@ -19,7 +19,7 @@ public class VariableDeclaration extends Declaration {
         tab += "    ";
         System.out.println(tab + name);
         if (index != null) {
-
+            System.out.println(tab + Integer.toString(index));
         }
     }
 }
