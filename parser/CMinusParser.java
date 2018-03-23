@@ -17,7 +17,7 @@ public class CMinusParser {
 			return;
 		}
 		try {
-			CMinusParser parserFriend = new CMinusParser(args[1]);
+			CMinusParser parserFriend = new CMinusParser(args[0]);
 			Program tree = parserFriend.parse();
 			tree.print();
 		}
@@ -214,13 +214,13 @@ public class CMinusParser {
                 match(Token.TokenType.INT);
                 Token nextToken = lex.getNextToken();
                 Token.TokenType tokenType = nextToken.getTokenType();
-                
+
                 if (tokenType == Token.TokenType.IDENTIFIER) {
-                    String id = (String)nextToken.getTokenData();                  
+                    String id = (String)nextToken.getTokenData();
                     Integer index = null;
                     nextToken = lex.viewNextToken();
-                    tokenType = nextToken.getTokenType();      
-                    
+                    tokenType = nextToken.getTokenType();
+
                     if(tokenType == Token.TokenType.LEFT_BRACKET) {
                         match(Token.TokenType.LEFT_BRACKET);
                         nextToken = lex.getNextToken();
