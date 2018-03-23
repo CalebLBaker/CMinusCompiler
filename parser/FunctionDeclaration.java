@@ -21,10 +21,12 @@ public class FunctionDeclaration extends Declaration {
      * @param tab current level of indentation
      */
     public void print(String tab) {
-        System.out.println(tab + Token.toString(returnType) + name + "(");
-        String newTab = tab + "    ";
-        for (Parameter p : parameters) {
-            p.print(newTab);
+        System.out.println(tab + Token.toString(returnType) + " " + name + "(");
+        if (parameters != null) {
+            String newTab = tab + "    ";
+            for (Parameter p : parameters) {
+                p.print(newTab);
+            }
         }
         System.out.println(tab + ")");
         statement.print(tab);

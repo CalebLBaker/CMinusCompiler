@@ -161,7 +161,7 @@ public class CMinusParser {
             Token nextID = lex.getNextToken();
             Token.TokenType type = nextToken.getTokenType();
             Token.TokenType type2 = nextID.getTokenType();
-            if(type2 == Token.TokenType.IDENTIFIER) {
+            if(type2 != Token.TokenType.IDENTIFIER) {
                 throw new ParseException("Declaration", linenum, nextToken);
             }
             switch(type) {
@@ -433,6 +433,7 @@ public class CMinusParser {
 		// Parse return value
 		if (isFactorFirstSet()) {
 			Expression retVal = parseExpression();
+			match(Token.TokenType.SEMI_COLON);
 			return new ReturnStatement(retVal);
 		}
 		else if (type == Token.TokenType.SEMI_COLON) {
@@ -560,7 +561,7 @@ public class CMinusParser {
 
 		// If looking for a factor and there is a factor
 		// or if the factor was passed as a parameter and there is an operator
-		if (prime == null && isFactorFirstSet() || prime != null && (isAddop() || isMulop())) {
+		if (prime == null && isFactorFirstSet() || prime != null && isTermFollowSet()) {
 			Expression left = parseTerm(prime);
 			if (isAddop()) {
 				Token.TokenType operator = lex.getNextToken().getTokenType();
