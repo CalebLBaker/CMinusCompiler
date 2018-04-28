@@ -1,16 +1,42 @@
-int add(int a, int b) {
-	return a + b;
+int a;
+
+int addThem(int d, int e) {
+  int f;
+  f = d + e;
+
+  return f;
 }
 
-int main(void) {
-	int x;
-	x = 5 + 17;
-	if (x > 12) {
-		int y;
-		y = x - 13;
-	}
-	while (x > y) {
-		y = y + 1;
-	}
-	return 0;
+int main (void) {
+
+  int b;
+  int c;
+  int g;
+  int h;
+  int i;
+
+  b = 5;
+
+  if (b == 5) {
+    a = 3;
+  }
+  else {
+    a = 4;
+  }
+
+  g = 0;
+  i = 1;
+  while (i <= 8) {
+    g = g + i;
+    i = i+1;
+  }
+  h = g / 3;
+  g = h * 4;
+
+  c = addThem(a, b);
+  putchar (c+g);
+  putchar (10);
+ 
+  return 0;
 }
+
