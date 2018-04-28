@@ -136,7 +136,7 @@ public class CMinusParser {
 	// Check if the next token is in the follow set of term
 	private boolean isTermFollowSet() {
 		Token.TokenType t = lex.viewNextToken().getTokenType();
-		return isAddop() || isMulop() || isRelOp() || t == Token.TokenType.SEMI_COLON
+		return isAddop() || isRelOp() || t == Token.TokenType.SEMI_COLON
 				|| t == Token.TokenType.COMMA || t == Token.TokenType.RIGHT_BRACKET
 				|| t == Token.TokenType.RIGHT_PAREN;
 	}
