@@ -29,10 +29,11 @@ public class CMinusCompiler implements Compiler {
 
         String fileName = filePrefix + ".c";
         try {
-            Parser myParser = new CMinusParser(fileName);
+            CMinusParser myParser = new CMinusParser(fileName);
 
             Program parseTree = myParser.parse();
-            myParser.printAST(parseTree);
+			parseTree.print();
+//            myParser.printAST(parseTree);
 
             CodeItem lowLevelCode = parseTree.genLLCode();
 
