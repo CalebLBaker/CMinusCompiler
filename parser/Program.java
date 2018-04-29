@@ -5,14 +5,15 @@
 * @version 1.0
 * File: Program.java
 * Created: Spring 2018
-* (C)Copyright Cedarville University, its Computer Science faculty, and the
 * authors. All rights reserved.
+* (C)Copyright Cedarville University, its Computer Science faculty, and the
 *
 * Description: This class becomes the root of a C- abstract syntax tree.
 *
 */
 package parser;
 import java.util.ArrayList;
+import lowlevel.CodeItem;
 
 public class Program {
 
@@ -33,6 +34,22 @@ public class Program {
 	 */
 	public ArrayList<Declaration> getDeclarations() {
 		return decl;
+	}
+
+	public CodeItem genLLCode() throws CodeGenerationException {
+
+		int len = decl.size();
+
+		if (len == 0) {
+			throw new CodeGenerationException();
+		}
+		CodeItem ret = decl.get(0).codeGen();
+		CodeItem curr = ret;
+		for (int i = 0; i < len; i++) {
+			curr.setNextItem(decl.get(i).codeGen());
+			curr = curr.getNextItem();
+		}
+		return ret;
 	}
 
 	/**
