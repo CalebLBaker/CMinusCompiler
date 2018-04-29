@@ -119,7 +119,7 @@ public class CMinusCompiler implements Compiler {
                 outFile.close();
             }
 
-        } catch (IOException ioe) {
+        } catch (Exception ioe) {
         }
 
     }

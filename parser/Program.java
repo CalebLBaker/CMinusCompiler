@@ -41,7 +41,7 @@ public class Program {
 		int len = decl.size();
 
 		if (len == 0) {
-			throw new CodeGenerationException();
+			throw new CodeGenerationException("Empty program");
 		}
 		CodeItem ret = decl.get(0).codeGen();
 		CodeItem curr = ret;

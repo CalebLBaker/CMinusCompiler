@@ -13,6 +13,7 @@
 *
 */
 package parser;
+import lowlevel.Data;
 
 public class VariableDeclaration extends Declaration {
     private String name;
@@ -49,4 +50,8 @@ public class VariableDeclaration extends Declaration {
             System.out.println(tab + Integer.toString(index));
         }
     }
+
+	public CodeItem genCode() {
+		return (CodeItem) new Data(Data.TYPE_INT, name);
+	}
 }

@@ -13,8 +13,9 @@
 *
 */
 package parser;
+import lowlevel.CodeItem;
 
 abstract public class Declaration {
 	abstract void print(String tab);
-	abstract CodeItem genCode();
+	public abstract CodeItem genCode();
 }
