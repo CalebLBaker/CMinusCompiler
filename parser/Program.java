@@ -43,10 +43,10 @@ public class Program {
 		if (len == 0) {
 			throw new CodeGenerationException("Empty program");
 		}
-		CodeItem ret = decl.get(0).codeGen();
+		CodeItem ret = decl.get(0).genCode();
 		CodeItem curr = ret;
 		for (int i = 0; i < len; i++) {
-			curr.setNextItem(decl.get(i).codeGen());
+			curr.setNextItem(decl.get(i).genCode());
 			curr = curr.getNextItem();
 		}
 		return ret;
