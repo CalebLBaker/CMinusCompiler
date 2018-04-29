@@ -14,6 +14,7 @@
 
 package parser;
 import java.util.ArrayList;
+import lowlevel.CodeItem;
 
 import scanner.Token;
 
@@ -59,4 +60,8 @@ public class FunctionDeclaration extends Declaration {
         System.out.println(tab + ")");
         statement.print(tab);
     }
+
+	public CodeItem genCode() {
+		return null;
+	}
 }
