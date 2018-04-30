@@ -67,14 +67,14 @@ public class FunctionDeclaration extends Declaration {
 
 	public CodeItem genCode() {
         FuncParam firstParam = null;
-        int len = parameters.size();
-        if (len != 0) {
+        if (parameters != null) {
             firstParam = parameters.get(0).genCode();
-        }
-        FuncParam par = firstParam;
-        for (int i = 1; i < len; i++) {
-            par.setNextParam(parameters.get(i).genCode());
-            par = par.getNextParam();
+            FuncParam par = firstParam;
+            int len = parameters.size();
+            for (int i = 1; i < len; i++) {
+                par.setNextParam(parameters.get(i).genCode());
+                par = par.getNextParam();
+            }
         }
 
         int type;
@@ -85,11 +85,16 @@ public class FunctionDeclaration extends Declaration {
             type = Data.TYPE_VOID;
         }
 
-        Function func = new Function(type, name, par);
+        Function func = new Function(type, name, firstParam);
         
         func.createBlock0();
+        func.appendBlock(new BasicBlock(func));
         statement.genCode(func);
-
+        func.appendBlock(func.getReturnBlock());
+        // BasicBlock unconnected = func.getFirstUnconnectedBlock();
+        // if (unconnected != null) {
+        //     func.appendBlock(unconnected);
+        // }
 
 		return func;
 	}

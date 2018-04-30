@@ -120,6 +120,7 @@ public class CMinusCompiler implements Compiler {
             }
 
         } catch (Exception ioe) {
+            ioe.printStackTrace();
         }
 
     }
