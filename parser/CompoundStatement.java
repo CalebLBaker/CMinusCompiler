@@ -14,6 +14,7 @@
 */
 package parser;
 import java.util.ArrayList;
+import lowlevel.Function;
 
 public class CompoundStatement extends Statement {
 
@@ -63,5 +64,9 @@ public class CompoundStatement extends Statement {
 			s.print(newTab);
 		}
 		System.out.println(tab + "}");
+	}
+
+	public void genCode(Function func) {
+
 	}
 }

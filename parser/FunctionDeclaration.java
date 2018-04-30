@@ -17,6 +17,10 @@ import java.util.ArrayList;
 import lowlevel.CodeItem;
 
 import scanner.Token;
+import lowlevel.FuncParam;
+import lowlevel.Data;
+import lowlevel.Function;
+import lowlevel.BasicBlock;
 
 public class FunctionDeclaration extends Declaration {
     // name of the function 
@@ -62,6 +66,31 @@ public class FunctionDeclaration extends Declaration {
     }
 
 	public CodeItem genCode() {
-		return null;
+        FuncParam firstParam = null;
+        int len = parameters.size();
+        if (len != 0) {
+            firstParam = parameters.get(0).genCode();
+        }
+        FuncParam par = firstParam;
+        for (int i = 1; i < len; i++) {
+            par.setNextParam(parameters.get(i).genCode());
+            par = par.getNextParam();
+        }
+
+        int type;
+        if (returnType == Token.TokenType.INT) {
+            type = Data.TYPE_INT;
+        }
+        else {
+            type = Data.TYPE_VOID;
+        }
+
+        Function func = new Function(type, name, par);
+        
+        func.createBlock0();
+        statement.genCode(func);
+
+
+		return func;
 	}
 }
