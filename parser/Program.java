@@ -36,15 +36,25 @@ public class Program {
 		return decl;
 	}
 
+
+	/**
+	 * Generates Low-level code
+	 * @return the head of a linked-list of CodeItems.
+	 * @throws CodeGenerationException if something goes wrong.
+	 */
 	public CodeItem genLLCode() throws CodeGenerationException {
 
 		int len = decl.size();
 
+		// Create symbol table for global scope.
 		SymbolTable tab = new SymbolTable();
 
+		// Throw exception if program is empty.
 		if (len == 0) {
 			throw new CodeGenerationException("Empty program");
 		}
+
+		// Generate the linked list of code items.
 		CodeItem ret = decl.get(0).genCode(tab);
 		CodeItem curr = ret;
 		for (int i = 1; i < len; i++) {
