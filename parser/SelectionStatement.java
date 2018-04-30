@@ -82,8 +82,11 @@ public class SelectionStatement extends Statement {
 	}
 
 	public void genCode(Function func, SymbolTable tab) throws CodeGenerationException{
+
 		boolean els = elsePart == null;
+
 		int condRegNum = condition.genCode(func, tab);
+
 		BasicBlock prevBlock = func.getCurrBlock();
 		BasicBlock thenBlock = new BasicBlock(func);
 		BasicBlock elseBlock = null;
@@ -106,5 +109,20 @@ public class SelectionStatement extends Statement {
 		branch.setSrcOperand(1, zilch);
 		branch.setSrcOperand(2, dest);
 		prevBlock.appendOper(branch);
+
+		func.appendToCurrentBlock(thenBlock);
+
+		func.setCurrBlock(thenBlock);
+
+		body.genCode(func, tab);
+
+		func.appendToCurrentBlock(postBlock);
+
+		if (els) {
+			func.setCurrBlock(elseBlock);
+			elsePart.genCode(func, tab);
+		}
+
+		
 	}
 }
