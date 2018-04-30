@@ -96,9 +96,9 @@ public class IterationStatement extends Statement {
 		Operation iterBranch = new Operation(Operation.OperationType.BNE, bodyBlock);
                 Operand iterDest = new Operand(Operand.OperandType.BLOCK, bodyBlock.getBlockNum());
 
-		branch.setSrcOperand(0, condReg);
-		branch.setSrcOperand(1, zilch);
-		branch.setSrcOperand(2, iterDest);
+		iterBranch.setSrcOperand(0, condReg);
+		iterBranch.setSrcOperand(1, zilch);
+		iterBranch.setSrcOperand(2, iterDest);
 		bodyBlock.appendOper(iterBranch);
                 
 		// Append post block to main chain.
