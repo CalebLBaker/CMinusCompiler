@@ -79,13 +79,19 @@ public class BinaryExpression extends Expression {
 
 	public int genCode(Function func, SymbolTable tab) throws CodeGenerationException {
             BasicBlock currBlock = func.getCurrBlock();
+            
+            //Generate code for left and right hand side of statement 
             int leftRegNum = lhs.genCode(func, tab);
             int rightRegNum = rhs.genCode(func, tab);
             Operand leftReg = new Operand(Operand.OperandType.REGISTER, leftRegNum);
             Operand rightReg = new Operand(Operand.OperandType.REGISTER, rightRegNum);
+            
+            // get register for the result of the operation
             int regNum = func.getNewRegNum();
             Operand destReg = new Operand(Operand.OperandType.REGISTER, regNum);
             Operation oper;
+            
+            // Create operator based on the binary operator type
             switch(operator) {
                 case LESS_THAN:
                     oper = new Operation(Operation.OperationType.LT, currBlock);           
@@ -120,10 +126,13 @@ public class BinaryExpression extends Expression {
                 default:
                     throw new CodeGenerationException("Incorrect operator in binary statement");
             }
+            
+            // Finish setting up operator and append to current branch
             oper.setDestOperand(0, destReg);
             oper.setSrcOperand(0, leftReg);
             oper.setSrcOperand(1, rightReg);
             currBlock.appendOper(oper);
+            
             return regNum;
 	}
 }
