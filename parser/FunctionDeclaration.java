@@ -66,7 +66,16 @@ public class FunctionDeclaration extends Declaration {
         statement.print(tab);
     }
 
+
+    /**
+	 * Generates Low-level code for a function declaration.
+	 * @param tab the symbol table for global scope.
+	 * @throws CodeGenerationException if an undeclared variable is used.
+     * @return a CodeItem representing the low-level code.
+	 */
 	public CodeItem genCode(SymbolTable tab) throws CodeGenerationException {
+
+        // Create linked-list of parameters.
         FuncParam firstParam = null;
         if (parameters != null) {
             firstParam = parameters.get(0).genCode();
@@ -78,6 +87,7 @@ public class FunctionDeclaration extends Declaration {
             }
         }
 
+        // Get return type
         int type;
         if (returnType == Token.TokenType.INT) {
             type = Data.TYPE_INT;
@@ -86,8 +96,10 @@ public class FunctionDeclaration extends Declaration {
             type = Data.TYPE_VOID;
         }
 
+        // Create function
         Function func = new Function(type, name, firstParam);
 
+        // Put parameters into the function's hash map
         if (parameters != null) {
             HashMap paramTable = func.getTable();
             for (int i = 0; i < parameters.size(); i++) {
@@ -95,14 +107,19 @@ public class FunctionDeclaration extends Declaration {
             }
         }
 
-        
+        // Create first two blocks.
         func.createBlock0();
         BasicBlock blockOne = new BasicBlock(func);
         func.appendBlock(blockOne);
         func.setCurrBlock(blockOne);
 
+        // Generate code for the function body.
         statement.genCode(func, tab, true);
+
+        // Append return block.
         func.appendBlock(func.getReturnBlock());
+
+        // Append unconnected chain.
         BasicBlock unconnected = func.getFirstUnconnectedBlock();
         if (unconnected != null) {
             func.appendBlock(unconnected);
