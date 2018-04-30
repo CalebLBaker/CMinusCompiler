@@ -15,9 +15,6 @@
 package parser;
 import lowlevel.Function;
 import lowlevel.Operation;
-
-import javax.swing.plaf.basic.BasicScrollPaneUI.ViewportChangeHandler;
-
 import lowlevel.BasicBlock;
 import lowlevel.Operand;
 
@@ -67,35 +64,54 @@ public class AssignExpression extends Expression {
 		value.print(tab);
 	}
 
-	// public int genCodeStore(Function func, SymbolTable tab) throws CodeGenerationException {
-	// 	Integer regNum = tab.get(name);
-	// 	if (regNum == null) {
-	// 		throw new CodeGenerationException("Use of undeclared variable: " + name);
-	// 	}
-	// 	return regNum;
-	// }
 
+	/**
+	 * Generates Low-level code for the assignment.
+	 * @param func the function that the assignment expression is in.
+	 * @param tab the symbol table for the current scope.
+	 * @return the register number for a register containing the value being assigned.
+	 * @throws CodeGenerationException if an undeclared variable is used.
+	 */
 	public int genCode(Function func, SymbolTable tab) throws CodeGenerationException{
+
+		// Number of register holding value to be assigned
 		int in = value.genCode(func, tab);
+
+		// Name of the variable being assigned to.
 		String varName = assignee.getName();
+
+		// Register that a value is being assigned to.
 		Integer out = tab.get(varName);
+
+		// Current basic block.
 		BasicBlock currBlock = func.getCurrBlock();
+
+		// Assignment operation.
 		Operation op;
+
+		// Throw exception if the variable hasn't been declared in this scope.
 		if (out == null) {
 			throw new CodeGenerationException("Use of undeclared variable: " + varName);
 		}
+
+		// If variable is global use a store instead of an assign.
 		else if (out == -1) {
 			op = new Operation(Operation.OperationType.STORE_I, currBlock);
 			Operand dest = new Operand(Operand.OperandType.STRING, varName);
 			Operand offset = new Operand(Operand.OperandType.INTEGER, 0);
 			op.setSrcOperand(1, dest);
 			op.setSrcOperand(2, offset);
+			out = in;
 		}
+
+		// If the variable is local, use an assign.
 		else {
 			op = new Operation(Operation.OperationType.ASSIGN, currBlock);
 			Operand var = new Operand(Operand.OperandType.REGISTER, out);
 			op.setDestOperand(0, var);
 		}
+
+		// Set source operand and append operation to block.
 		Operand val = new Operand(Operand.OperandType.REGISTER, in);
 		op.setSrcOperand(0, val);
 		currBlock.appendOper(op);
