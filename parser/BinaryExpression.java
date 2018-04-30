@@ -15,6 +15,9 @@
 package parser;
 import scanner.Token;
 import lowlevel.Function;
+import lowlevel.Operation;
+import lowlevel.Operand;
+import lowlevel.BasicBlock;
 
 public class BinaryExpression extends Expression {
 
@@ -74,7 +77,41 @@ public class BinaryExpression extends Expression {
 		rhs.print(tab);
 	}
 
-	public int genCode(Function func, SymbolTable tab) {
-		return -1;
+	public int genCode(Function func, SymbolTable tab) throws CodeGenerationException {
+            BasicBlock currBlock = func.getCurrBlock();
+            int leftRegNum = lhs.genCode(func, tab);
+            int rightRegNum = rhs.genCode(func, tab);
+            Operand leftReg = new Operand(Operand.OperandType.REGISTER, leftRegNum);
+            Operand rightReg = new Operand(Operand.OperandType.REGISTER, rightRegNum);
+            int regNum = func.getNewRegNum();
+            Operand destReg = new Operand(Operand.OperandType.REGISTER, regNum);
+            Operation oper;
+            switch(operator) {
+                case LESS_THAN:
+                    oper = new Operation(Operation.OperationType.LT, currBlock);           
+                break;
+                case LESS_THAN_EQUAL_TO:
+                    oper = new Operation(Operation.OperationType.LTE, currBlock);     
+                break;      
+                case GREATER_THAN:
+                    oper = new Operation(Operation.OperationType.GT, currBlock);     
+                break;
+                case GREATER_THAN_EQUAL_TO:
+                    oper = new Operation(Operation.OperationType.GTE, currBlock);     
+                break;
+                case EQUALITY:
+                    oper = new Operation(Operation.OperationType.EQUAL, currBlock);     
+                break;
+                case NOT_EQUAL:
+                    oper = new Operation(Operation.OperationType.NOT_EQUAL, currBlock);     
+                break;      
+                default:
+                    throw new CodeGenerationException("Incorrect operator in binary statement");
+            }
+            oper.setDestOperand(0, destReg);
+            oper.setSrcOperand(0, leftReg);
+            oper.setSrcOperand(1, rightReg);
+            currBlock.appendOper(oper);
+            return regNum;
 	}
 }
