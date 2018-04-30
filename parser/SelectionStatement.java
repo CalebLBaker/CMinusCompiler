@@ -14,6 +14,9 @@
 */
 package parser;
 import lowlevel.Function;
+import lowlevel.BasicBlock;
+import lowlevel.Operand;
+import lowlevel.Operation;
 
 public class SelectionStatement extends Statement {
 
@@ -78,7 +81,30 @@ public class SelectionStatement extends Statement {
 		}
 	}
 
-	public void genCode(Function func, SymbolTable tab) {
-		
+	public void genCode(Function func, SymbolTable tab) throws CodeGenerationException{
+		boolean els = elsePart == null;
+		int condRegNum = condition.genCode(func, tab);
+		BasicBlock prevBlock = func.getCurrBlock();
+		BasicBlock thenBlock = new BasicBlock(func);
+		BasicBlock elseBlock = null;
+		if (els) {
+			elseBlock = new BasicBlock(func);
+		}
+		BasicBlock postBlock = new BasicBlock(func);
+
+		Operation branch = new Operation(Operation.OperationType.BEQ, prevBlock);
+		Operand condReg = new Operand(Operand.OperandType.REGISTER, condRegNum);
+		Operand zilch = new Operand(Operand.OperandType.INTEGER, 0);
+		Operand dest;
+		if (els) {
+			dest  = new Operand(Operand.OperandType.BLOCK, elseBlock.getBlockNum());
+		}
+		else {
+			dest = new Operand(Operand.OperandType.BLOCK, postBlock.getBlockNum());
+		}
+		branch.setSrcOperand(0, condReg);
+		branch.setSrcOperand(1, zilch);
+		branch.setSrcOperand(2, dest);
+		prevBlock.appendOper(branch);
 	}
 }

@@ -55,7 +55,7 @@ public class ExpressionStatement extends Statement {
 		}
 	}
 
-	public void genCode(Function func, SymbolTable tab) {
+	public void genCode(Function func, SymbolTable tab) throws CodeGenerationException{
 		e.genCode(func, tab);
 	}
 }

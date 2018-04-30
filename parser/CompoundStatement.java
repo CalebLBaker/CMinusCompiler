@@ -70,7 +70,7 @@ public class CompoundStatement extends Statement {
 		System.out.println(tab + "}");
 	}
 
-	public void genCode(Function func, SymbolTable tab, boolean handleParams) {
+	public void genCode(Function func, SymbolTable tab, boolean handleParams) throws CodeGenerationException{
 		SymbolTable newTab = new SymbolTable(tab);
 		HashMap paramTable = func.getTable();
 		Set<String> params = paramTable.keySet();
@@ -81,12 +81,12 @@ public class CompoundStatement extends Statement {
 		finishGenCode(func, newTab);
 	}
 
-	public void genCode(Function func, SymbolTable tab) {
+	public void genCode(Function func, SymbolTable tab) throws CodeGenerationException{
 		SymbolTable newTab = new SymbolTable(tab);
 		finishGenCode(func, newTab);
 	}
 
-	public void finishGenCode(Function func, SymbolTable newTab) {
+	public void finishGenCode(Function func, SymbolTable newTab) throws CodeGenerationException{
 		if (decl != null) {
 			for (int i = 0; i < decl.size(); i++) {
 				decl.get(i).genCode(func, newTab);

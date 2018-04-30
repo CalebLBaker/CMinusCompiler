@@ -24,5 +24,5 @@ abstract public class Statement {
 	 * @param tab how far to indent the node
 	 */
 	abstract public void print(String tab);
-	abstract public void genCode(Function func, SymbolTable tab);
+	abstract public void genCode(Function func, SymbolTable tab) throws CodeGenerationException;
 }

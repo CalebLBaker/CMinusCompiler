@@ -59,6 +59,7 @@ public class VariableDeclaration extends Declaration {
     }
     
     public void genCode(Function func, SymbolTable tab) {
-
+        int regNum = func.getNewRegNum();
+        tab.insert(name, regNum);
     }
 }

@@ -66,7 +66,7 @@ public class FunctionDeclaration extends Declaration {
         statement.print(tab);
     }
 
-	public CodeItem genCode(SymbolTable tab) {
+	public CodeItem genCode(SymbolTable tab) throws CodeGenerationException {
         FuncParam firstParam = null;
         if (parameters != null) {
             firstParam = parameters.get(0).genCode();

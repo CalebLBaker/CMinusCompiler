@@ -71,7 +71,7 @@ public class CallExpression extends Expression {
 		System.out.println(tab + ")");
 	}
 
-	public int genCode(Function func, SymbolTable tab) {
+	public int genCode(Function func, SymbolTable tab) throws CodeGenerationException{
 		int paramNum = 0;
 		BasicBlock currBlock = func.getCurrBlock();
 		if (parameters != null) {

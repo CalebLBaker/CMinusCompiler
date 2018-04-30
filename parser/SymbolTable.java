@@ -1,6 +1,6 @@
 package parser;
 import java.util.HashMap;
-import java.util.HashSet;
+
 public class SymbolTable {
 
     public SymbolTable parent;
