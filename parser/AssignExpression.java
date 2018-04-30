@@ -13,6 +13,13 @@
 *
 */
 package parser;
+import lowlevel.Function;
+import lowlevel.Operation;
+
+import javax.swing.plaf.basic.BasicScrollPaneUI.ViewportChangeHandler;
+
+import lowlevel.BasicBlock;
+import lowlevel.Operand;
 
 public class AssignExpression extends Expression {
 
@@ -58,5 +65,40 @@ public class AssignExpression extends Expression {
 		tab += "    ";
 		assignee.print(tab);
 		value.print(tab);
+	}
+
+	// public int genCodeStore(Function func, SymbolTable tab) throws CodeGenerationException {
+	// 	Integer regNum = tab.get(name);
+	// 	if (regNum == null) {
+	// 		throw new CodeGenerationException("Use of undeclared variable: " + name);
+	// 	}
+	// 	return regNum;
+	// }
+
+	public int genCode(Function func, SymbolTable tab) throws CodeGenerationException{
+		int in = value.genCode(func, tab);
+		String varName = assignee.getName();
+		Integer out = tab.get(varName);
+		BasicBlock currBlock = func.getCurrBlock();
+		Operation op;
+		if (out == null) {
+			throw new CodeGenerationException("Use of undeclared variable: " + varName);
+		}
+		else if (out == -1) {
+			op = new Operation(Operation.OperationType.STORE_I, currBlock);
+			Operand dest = new Operand(Operand.OperandType.STRING, varName);
+			Operand offset = new Operand(Operand.OperandType.INTEGER, 0);
+			op.setSrcOperand(1, dest);
+			op.setSrcOperand(2, offset);
+		}
+		else {
+			op = new Operation(Operation.OperationType.ASSIGN, currBlock);
+			Operand var = new Operand(Operand.OperandType.REGISTER, out);
+			op.setDestOperand(0, var);
+		}
+		Operand val = new Operand(Operand.OperandType.REGISTER, in);
+		op.setSrcOperand(0, val);
+		currBlock.appendOper(op);
+		return out;
 	}
 }

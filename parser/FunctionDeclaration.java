@@ -17,6 +17,11 @@ import java.util.ArrayList;
 import lowlevel.CodeItem;
 
 import scanner.Token;
+import lowlevel.FuncParam;
+import lowlevel.Data;
+import lowlevel.Function;
+import lowlevel.BasicBlock;
+import java.util.HashMap;
 
 public class FunctionDeclaration extends Declaration {
     // name of the function 
@@ -61,7 +66,48 @@ public class FunctionDeclaration extends Declaration {
         statement.print(tab);
     }
 
-	public CodeItem genCode() {
-		return null;
+	public CodeItem genCode(SymbolTable tab) throws CodeGenerationException {
+        FuncParam firstParam = null;
+        if (parameters != null) {
+            firstParam = parameters.get(0).genCode();
+            FuncParam par = firstParam;
+            int len = parameters.size();
+            for (int i = 1; i < len; i++) {
+                par.setNextParam(parameters.get(i).genCode());
+                par = par.getNextParam();
+            }
+        }
+
+        int type;
+        if (returnType == Token.TokenType.INT) {
+            type = Data.TYPE_INT;
+        }
+        else {
+            type = Data.TYPE_VOID;
+        }
+
+        Function func = new Function(type, name, firstParam);
+
+        if (parameters != null) {
+            HashMap paramTable = func.getTable();
+            for (int i = 0; i < parameters.size(); i++) {
+                paramTable.put(parameters.get(i).getName(), func.getNewRegNum());
+            }
+        }
+
+        
+        func.createBlock0();
+        BasicBlock blockOne = new BasicBlock(func);
+        func.appendBlock(blockOne);
+        func.setCurrBlock(blockOne);
+
+        statement.genCode(func, tab, true);
+        func.appendBlock(func.getReturnBlock());
+        BasicBlock unconnected = func.getFirstUnconnectedBlock();
+        if (unconnected != null) {
+            func.appendBlock(unconnected);
+        }
+
+		return func;
 	}
 }

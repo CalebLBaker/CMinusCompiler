@@ -13,6 +13,7 @@
 *
 */
 package parser;
+import lowlevel.Function;
 
 public class IterationStatement extends Statement {
 
@@ -57,5 +58,9 @@ public class IterationStatement extends Statement {
 		tab += "    ";
 		condition.print(tab);
 		body.print(tab);
+	}
+
+	public void genCode(Function func, SymbolTable tab) {
+		
 	}
 }

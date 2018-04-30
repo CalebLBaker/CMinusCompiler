@@ -14,6 +14,8 @@
 */
 
 package parser;
+import lowlevel.Data;
+import lowlevel.FuncParam;
 
 public class Parameter {
     // name of the parameter 
@@ -42,5 +44,13 @@ public class Parameter {
     		n += "[]";
     	}
     	System.out.println(tab + n);
+    }
+
+    public FuncParam genCode() {
+        return new FuncParam(Data.TYPE_INT, name, false);
+    }
+
+    public String getName() {
+        return name;
     }
 }

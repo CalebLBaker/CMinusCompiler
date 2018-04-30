@@ -13,6 +13,7 @@
 *
 */
 package parser;
+import lowlevel.Function;
 
 public class ReturnStatement extends Statement {
 
@@ -51,5 +52,9 @@ public class ReturnStatement extends Statement {
 		if (ret != null) {
 			ret.print(tab + "    ");
 		}
+	}
+
+	public void genCode(Function func, SymbolTable tab) {
+		
 	}
 }

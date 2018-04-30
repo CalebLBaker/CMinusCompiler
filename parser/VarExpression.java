@@ -13,6 +13,10 @@
 *
 */
 package parser;
+import lowlevel.BasicBlock;
+import lowlevel.Function;
+import lowlevel.Operand;
+import lowlevel.Operation;
 
 public class VarExpression extends Expression {
 
@@ -72,5 +76,23 @@ public class VarExpression extends Expression {
 			index.print(tab + "    ");
 			System.out.println(tab + "]");
 		}
+	}
+
+	public int genCode(Function func, SymbolTable tab) throws CodeGenerationException{
+		Integer regNum = tab.get(name);
+		if (regNum == null) {
+			throw new CodeGenerationException("Use of undeclared variable: " + name);
+		}
+		else if (regNum == -1) {
+			BasicBlock currBlock = func.getCurrBlock();
+			Operation ld = new Operation(Operation.OperationType.LOAD_I, currBlock);
+			regNum = func.getNewRegNum();
+			Operand globVar = new Operand(Operand.OperandType.STRING, name);
+			Operand reg = new Operand(Operand.OperandType.REGISTER, regNum);
+			ld.setSrcOperand(0, globVar);
+			ld.setDestOperand(0, reg);
+			currBlock.appendOper(ld);
+		}
+		return regNum;
 	}
 }

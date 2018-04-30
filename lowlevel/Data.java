@@ -92,7 +92,7 @@ public class Data
 
   /***************************************************************************/
   // support methods
-  public void printLLCode(PrintWriter outFile) {
+  public void printLLCode(PrintWriter outFile) throws Exception {
     if (outFile == null) {
       System.out.print("(DATA  " + getName());
       if (isArray) {

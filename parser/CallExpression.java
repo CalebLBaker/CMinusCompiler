@@ -16,6 +16,13 @@ package parser;
 
 import java.util.ArrayList;
 
+import lowlevel.BasicBlock;
+import lowlevel.Function;
+import lowlevel.Operand;
+import lowlevel.Operation;
+import lowlevel.BasicBlock;
+import lowlevel.Attribute;
+
 public class CallExpression extends Expression {
 
 
@@ -62,5 +69,41 @@ public class CallExpression extends Expression {
 			p.print(moreTab);
 		}
 		System.out.println(tab + ")");
+	}
+
+	public int genCode(Function func, SymbolTable tab) throws CodeGenerationException{
+		int paramNum = 0;
+		BasicBlock currBlock = func.getCurrBlock();
+		if (parameters != null) {
+			paramNum = parameters.size();
+			ArrayList<Operation> params = new ArrayList<Operation>();
+			for (int i = 0; i < paramNum; i++) {
+				Expression param = parameters.get(i);
+				Operand parReg = new Operand(Operand.OperandType.REGISTER, param.genCode(func, tab));
+				Operation op = new Operation(Operation.OperationType.PASS, currBlock);
+				Attribute pn = new Attribute("PARAM_NUM", Integer.toString(i));
+				op.addAttribute(pn);
+				op.setSrcOperand(0, parReg);
+				params.add(op);
+			}
+			for (int i = 0; i < params.size(); i++) {
+				currBlock.appendOper(params.get(i));
+			}
+		}
+		Operation call = new Operation(Operation.OperationType.CALL, currBlock);
+		Operand callName = new Operand(Operand.OperandType.STRING, name);
+		call.setSrcOperand(0, callName);
+		Attribute pn = new Attribute("numParams", Integer.toString(paramNum));
+		call.addAttribute(pn);
+		currBlock.appendOper(call);
+
+		Operation getResult = new Operation(Operation.OperationType.ASSIGN, currBlock);
+		Operand retReg = new Operand(Operand.OperandType.MACRO, "RetReg");
+		int regNum = func.getNewRegNum();
+		Operand exprReg = new Operand(Operand.OperandType.REGISTER, regNum);
+		getResult.setSrcOperand(0, retReg);
+		getResult.setDestOperand(0, exprReg);
+		currBlock.appendOper(getResult);
+		return regNum;
 	}
 }

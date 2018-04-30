@@ -120,11 +120,13 @@ public class CMinusCompiler implements Compiler {
             }
 
         } catch (Exception ioe) {
+            ioe.printStackTrace();
         }
 
     }
 
     public static void main(String[] args) {
+        System.out.println(System.getProperty("user.dir"));
         String filePrefix = args[0];
         CMinusCompiler myCompiler = new CMinusCompiler();
         myCompiler.setGenX64Code(true);

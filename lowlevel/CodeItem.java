@@ -31,5 +31,5 @@ public abstract class CodeItem {
     nextItem = next;
   }
     // abstract method to support polymorphism during printing
-  public void printLLCode(PrintWriter outFile) { }
+  public void printLLCode(PrintWriter outFile) throws Exception { }
 }
