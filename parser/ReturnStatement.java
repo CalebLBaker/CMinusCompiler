@@ -13,7 +13,12 @@
 *
 */
 package parser;
+import java.util.HashSet;
+import java.util.Set;
 import lowlevel.Function;
+import lowlevel.Operand;
+import lowlevel.Operation;
+import lowlevel.BasicBlock;
 
 public class ReturnStatement extends Statement {
 
@@ -54,7 +59,21 @@ public class ReturnStatement extends Statement {
 		}
 	}
 
-	public void genCode(Function func, SymbolTable tab) {
-		
+	public void genCode(Function func, SymbolTable tab) throws CodeGenerationException {
+            BasicBlock currBlock = func.getCurrBlock();
+            if (ret != null) {
+                int regNum = ret.genCode(func, tab);
+                Operation assign = new Operation(Operation.OperationType.ASSIGN, currBlock);
+                Operand exprReg = new Operand(Operand.OperandType.REGISTER, regNum);
+                Operand retReg = new Operand(Operand.OperandType.MACRO, "retReg");
+                assign.setSrcOperand(0, exprReg);
+                assign.setDestOperand(0, retReg);
+                currBlock.appendOper(assign);
+            }
+            BasicBlock block = func.getReturnBlock();
+            Operation jump = new Operation(Operation.OperationType.JMP, currBlock);
+            Operand retBlock = new Operand(Operand.OperandType.BLOCK, block);
+            jump.setSrcOperand(0, retBlock);
+            currBlock.appendOper(jump);
 	}
 }
