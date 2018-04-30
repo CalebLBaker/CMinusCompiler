@@ -14,6 +14,7 @@
 */
 package parser;
 import lowlevel.Data;
+import lowlevel.CodeItem;
 
 public class VariableDeclaration extends Declaration {
     private String name;
