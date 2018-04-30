@@ -14,6 +14,9 @@
 */
 package parser;
 import lowlevel.Function;
+import lowlevel.Operand;
+import lowlevel.Operation;
+import lowlevel.BasicBlock;
 
 public class NumExpression extends Expression {
 
@@ -47,6 +50,13 @@ public class NumExpression extends Expression {
 	}
 
 	public void genCode(Function func) {
-		
+		BasicBlock currBlock = func.getCurrBlock();
+		Operation op = new Operation(Operation.OperationType.ASSIGN, currBlock);
+		Operand val = new Operand(Operand.OperandType.INTEGER, data);
+		regNum = func.getNewRegNum();
+		Operand reg = new Operand(Operand.OperandType.REGISTER, regNum);
+		op.setSrcOperand(0, val);
+		op.setDestOperand(0, reg);
+		currBlock.appendOper(op);
 	}
 }
