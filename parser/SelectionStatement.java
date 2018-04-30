@@ -119,10 +119,22 @@ public class SelectionStatement extends Statement {
 		func.appendToCurrentBlock(postBlock);
 
 		if (els) {
+
 			func.setCurrBlock(elseBlock);
+
 			elsePart.genCode(func, tab);
+
+			BasicBlock endOfElse = func.getCurrBlock();
+			Operation jump = new Operation(Operation.OperationType.JMP, endOfElse);
+			dest = new Operand(Operand.OperandType.BLOCK, postBlock.getBlockNum());
+			jump.setSrcOperand(0, dest);
+			endOfElse.appendOper(jump);
+
+			func.appendUnconnectedBlock(elseBlock);
+
 		}
 
-		
+		func.setCurrBlock(postBlock);
+
 	}
 }
