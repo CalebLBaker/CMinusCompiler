@@ -24,5 +24,12 @@ abstract public class Statement {
 	 * @param tab how far to indent the node
 	 */
 	abstract public void print(String tab);
+
+	/**
+	 * Generates Low-level code for a statement
+	 * @param func the function that the statement appears in.
+	 * @param tab the symbol table for the current scope.
+	 * @throws CodeGenerationException if an undeclared variable is used.
+	 */
 	abstract public void genCode(Function func, SymbolTable tab) throws CodeGenerationException;
 }
