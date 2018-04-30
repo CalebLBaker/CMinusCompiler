@@ -60,7 +60,7 @@ public class IterationStatement extends Statement {
 		body.print(tab);
 	}
 
-	public void genCode(Function func) {
+	public void genCode(Function func, SymbolTable tab) {
 		
 	}
 }

@@ -15,6 +15,8 @@
 package parser;
 import java.util.ArrayList;
 import lowlevel.Function;
+import java.util.Set;
+import java.util.HashMap;
 
 public class CompoundStatement extends Statement {
 
@@ -23,6 +25,8 @@ public class CompoundStatement extends Statement {
 
 	// Statements
 	private ArrayList<Statement> stmt;
+
+	public SymbolTable symTab;
 
 	/**
 	 * Constructor
@@ -66,15 +70,31 @@ public class CompoundStatement extends Statement {
 		System.out.println(tab + "}");
 	}
 
-	public void genCode(Function func) {
+	public void genCode(Function func, SymbolTable tab, boolean handleParams) {
+		SymbolTable newTab = new SymbolTable(tab);
+		HashMap paramTable = func.getTable();
+		Set<String> params = paramTable.keySet();
+		for (String k : params) {
+			newTab.insert(k, (Integer) paramTable.get(k));
+		}
+		// func.getTable().putAll(newTab.table);
+		finishGenCode(func, newTab);
+	}
+
+	public void genCode(Function func, SymbolTable tab) {
+		SymbolTable newTab = new SymbolTable(tab);
+		finishGenCode(func, newTab);
+	}
+
+	public void finishGenCode(Function func, SymbolTable newTab) {
 		if (decl != null) {
 			for (int i = 0; i < decl.size(); i++) {
-				decl.get(i).genCode(func);
+				decl.get(i).genCode(func, newTab);
 			}
 		}
 		if (stmt != null) {
 			for (int i = 0; i < stmt.size(); i++) {
-				stmt.get(i).genCode(func);
+				stmt.get(i).genCode(func, newTab);
 			}
 		}
 	}

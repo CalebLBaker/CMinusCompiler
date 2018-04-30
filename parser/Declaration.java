@@ -17,5 +17,5 @@ import lowlevel.CodeItem;
 
 abstract public class Declaration {
 	abstract void print(String tab);
-	public abstract CodeItem genCode();
+	public abstract CodeItem genCode(SymbolTable tab);
 }

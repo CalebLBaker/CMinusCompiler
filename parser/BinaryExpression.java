@@ -74,7 +74,7 @@ public class BinaryExpression extends Expression {
 		rhs.print(tab);
 	}
 
-	public void genCode(Function func) {
-		
+	public int genCode(Function func, SymbolTable tab) {
+		return -1;
 	}
 }

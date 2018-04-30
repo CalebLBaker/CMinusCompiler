@@ -21,6 +21,7 @@ import lowlevel.FuncParam;
 import lowlevel.Data;
 import lowlevel.Function;
 import lowlevel.BasicBlock;
+import java.util.HashMap;
 
 public class FunctionDeclaration extends Declaration {
     // name of the function 
@@ -65,7 +66,7 @@ public class FunctionDeclaration extends Declaration {
         statement.print(tab);
     }
 
-	public CodeItem genCode() {
+	public CodeItem genCode(SymbolTable tab) {
         FuncParam firstParam = null;
         if (parameters != null) {
             firstParam = parameters.get(0).genCode();
@@ -86,10 +87,21 @@ public class FunctionDeclaration extends Declaration {
         }
 
         Function func = new Function(type, name, firstParam);
+
+        if (parameters != null) {
+            HashMap paramTable = func.getTable();
+            for (int i = 0; i < parameters.size(); i++) {
+                paramTable.put(parameters.get(i).getName(), func.getNewRegNum());
+            }
+        }
+
         
         func.createBlock0();
-        func.appendBlock(new BasicBlock(func));
-        statement.genCode(func);
+        BasicBlock blockOne = new BasicBlock(func);
+        func.appendBlock(blockOne);
+        func.setCurrBlock(blockOne);
+
+        statement.genCode(func, tab, true);
         func.appendBlock(func.getReturnBlock());
         BasicBlock unconnected = func.getFirstUnconnectedBlock();
         if (unconnected != null) {

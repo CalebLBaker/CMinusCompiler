@@ -14,6 +14,12 @@
 */
 package parser;
 import lowlevel.Function;
+import lowlevel.Operation;
+
+import javax.swing.plaf.basic.BasicScrollPaneUI.ViewportChangeHandler;
+
+import lowlevel.BasicBlock;
+import lowlevel.Operand;
 
 public class AssignExpression extends Expression {
 
@@ -61,7 +67,16 @@ public class AssignExpression extends Expression {
 		value.print(tab);
 	}
 
-	public void genCode(Function func) {
-
+	public int genCode(Function func, SymbolTable tab) {
+		int in = value.genCode(func, tab);
+		int out = assignee.genCode(func, tab);
+		BasicBlock currBlock = func.getCurrBlock();
+		Operation op = new Operation(Operation.OperationType.ASSIGN, currBlock);
+		Operand val = new Operand(Operand.OperandType.REGISTER, in);
+		Operand var = new Operand(Operand.OperandType.REGISTER, out);
+		op.setSrcOperand(0, val);
+		op.setDestOperand(0, var);
+		currBlock.appendOper(op);
+		return out;
 	}
 }

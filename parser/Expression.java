@@ -19,12 +19,10 @@ import lowlevel.Function;
 
 abstract public class Expression {
 
-	int regNum = -1;
-
 	/**
 	 * Prints the node
 	 * @param tab how far to indent the node
 	 */
 	abstract public void print(String tab);
-	abstract public void genCode(Function func);
+	abstract public int genCode(Function func, SymbolTable tab);
 }

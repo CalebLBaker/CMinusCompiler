@@ -71,18 +71,23 @@ public class CallExpression extends Expression {
 		System.out.println(tab + ")");
 	}
 
-	public void genCode(Function func) {
+	public int genCode(Function func, SymbolTable tab) {
 		int paramNum = 0;
 		BasicBlock currBlock = func.getCurrBlock();
 		if (parameters != null) {
 			paramNum = parameters.size();
+			ArrayList<Operation> params = new ArrayList<Operation>();
 			for (int i = 0; i < paramNum; i++) {
 				Expression param = parameters.get(i);
-				param.genCode(func);
-				Operand parReg = new Operand(Operand.OperandType.REGISTER, param.regNum);
+				Operand parReg = new Operand(Operand.OperandType.REGISTER, param.genCode(func, tab));
 				Operation op = new Operation(Operation.OperationType.PASS, currBlock);
+				Attribute pn = new Attribute("PARAM_NUM", Integer.toString(i));
+				op.addAttribute(pn);
 				op.setSrcOperand(0, parReg);
-				currBlock.appendOper(op);
+				params.add(op);
+			}
+			for (int i = 0; i < params.size(); i++) {
+				currBlock.appendOper(params.get(i));
 			}
 		}
 		Operation call = new Operation(Operation.OperationType.CALL, currBlock);
@@ -94,10 +99,11 @@ public class CallExpression extends Expression {
 
 		Operation getResult = new Operation(Operation.OperationType.ASSIGN, currBlock);
 		Operand retReg = new Operand(Operand.OperandType.MACRO, "RetReg");
-		regNum = func.getNewRegNum();
+		int regNum = func.getNewRegNum();
 		Operand exprReg = new Operand(Operand.OperandType.REGISTER, regNum);
 		getResult.setSrcOperand(0, retReg);
 		getResult.setDestOperand(0, exprReg);
 		currBlock.appendOper(getResult);
+		return regNum;
 	}
 }

@@ -54,7 +54,7 @@ public class ReturnStatement extends Statement {
 		}
 	}
 
-	public void genCode(Function func) {
+	public void genCode(Function func, SymbolTable tab) {
 		
 	}
 }

@@ -75,7 +75,7 @@ public class VarExpression extends Expression {
 		}
 	}
 
-	public void genCode(Function func) {
-		
+	public int genCode(Function func, SymbolTable tab) {
+		return tab.get(name);
 	}
 }

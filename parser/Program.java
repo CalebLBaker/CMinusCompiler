@@ -40,13 +40,15 @@ public class Program {
 
 		int len = decl.size();
 
+		SymbolTable tab = new SymbolTable();
+
 		if (len == 0) {
 			throw new CodeGenerationException("Empty program");
 		}
-		CodeItem ret = decl.get(0).genCode();
+		CodeItem ret = decl.get(0).genCode(tab);
 		CodeItem curr = ret;
 		for (int i = 1; i < len; i++) {
-			curr.setNextItem(decl.get(i).genCode());
+			curr.setNextItem(decl.get(i).genCode(tab));
 			curr = curr.getNextItem();
 		}
 		return ret;

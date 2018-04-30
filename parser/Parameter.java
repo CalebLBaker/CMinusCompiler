@@ -14,6 +14,7 @@
 */
 
 package parser;
+import lowlevel.Data;
 import lowlevel.FuncParam;
 
 public class Parameter {
@@ -46,6 +47,10 @@ public class Parameter {
     }
 
     public FuncParam genCode() {
-        return null;
+        return new FuncParam(Data.TYPE_INT, name, false);
+    }
+
+    public String getName() {
+        return name;
     }
 }

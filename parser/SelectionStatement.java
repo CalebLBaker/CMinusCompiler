@@ -78,7 +78,7 @@ public class SelectionStatement extends Statement {
 		}
 	}
 
-	public void genCode(Function func) {
+	public void genCode(Function func, SymbolTable tab) {
 		
 	}
 }

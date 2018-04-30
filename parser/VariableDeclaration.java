@@ -53,11 +53,12 @@ public class VariableDeclaration extends Declaration {
         }
     }
 
-	public CodeItem genCode() {
+	public CodeItem genCode(SymbolTable tab) {
+        tab.insert(name, -1);
 		return (CodeItem) new Data(Data.TYPE_INT, name);
     }
     
-    public void genCode(Function func) {
+    public void genCode(Function func, SymbolTable tab) {
 
     }
 }
