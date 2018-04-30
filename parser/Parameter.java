@@ -46,6 +46,10 @@ public class Parameter {
     	System.out.println(tab + n);
     }
 
+	/**
+	 * Generates Low-level code for a function parameter.
+	 * @return the low-level code for the parameter.
+	 */
     public FuncParam genCode() {
         return new FuncParam(Data.TYPE_INT, name, false);
     }

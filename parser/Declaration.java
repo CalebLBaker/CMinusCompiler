@@ -17,5 +17,12 @@ import lowlevel.CodeItem;
 
 abstract public class Declaration {
 	abstract void print(String tab);
+
+	/**
+	 * Generates Low-level code for a top-level declaration.
+	 * @param tab the symbol table for global scope.
+	 * @throws CodeGenerationException if an undeclared variable is used.
+	 * @return a CodeItem representing the low-level code.
+	 */
 	public abstract CodeItem genCode(SymbolTable tab) throws CodeGenerationException;
 }

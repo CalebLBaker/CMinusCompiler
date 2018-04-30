@@ -71,12 +71,25 @@ public class CallExpression extends Expression {
 		System.out.println(tab + ")");
 	}
 
+
+	/**
+	 * Generates Low-level code for the function call.
+	 * @param func the caller function.
+	 * @param tab the symbol table for the current scope in the caller function.
+	 * @return the register number for register containing the return value.
+	 * @throws CodeGenerationException if an undeclared variable is used.
+	 */
 	public int genCode(Function func, SymbolTable tab) throws CodeGenerationException{
+
 		int paramNum = 0;
 		BasicBlock currBlock = func.getCurrBlock();
+
+		// Generate code to evaluate and pass all of the parameters.
 		if (parameters != null) {
 			paramNum = parameters.size();
 			ArrayList<Operation> params = new ArrayList<Operation>();
+
+			// Evaluate all of the parameters.
 			for (int i = 0; i < paramNum; i++) {
 				Expression param = parameters.get(i);
 				Operand parReg = new Operand(Operand.OperandType.REGISTER, param.genCode(func, tab));
@@ -86,10 +99,14 @@ public class CallExpression extends Expression {
 				op.setSrcOperand(0, parReg);
 				params.add(op);
 			}
+
+			// Pass the parameters to the function.
 			for (int i = 0; i < params.size(); i++) {
 				currBlock.appendOper(params.get(i));
 			}
 		}
+
+		// Generate call operation.
 		Operation call = new Operation(Operation.OperationType.CALL, currBlock);
 		Operand callName = new Operand(Operand.OperandType.STRING, name);
 		call.setSrcOperand(0, callName);
@@ -97,6 +114,7 @@ public class CallExpression extends Expression {
 		call.addAttribute(pn);
 		currBlock.appendOper(call);
 
+		// Move return value into a gneral-purpose register.
 		Operation getResult = new Operation(Operation.OperationType.ASSIGN, currBlock);
 		Operand retReg = new Operand(Operand.OperandType.MACRO, "RetReg");
 		int regNum = func.getNewRegNum();

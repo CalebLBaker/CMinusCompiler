@@ -81,12 +81,21 @@ public class SelectionStatement extends Statement {
 		}
 	}
 
+
+	/**
+	 * Generates Low-level code for a selection statement
+	 * @param func the function that the statement appears in.
+	 * @param tab the symbol table for the current scope.
+	 * @throws CodeGenerationException if an undeclared variable is used.
+	 */
 	public void genCode(Function func, SymbolTable tab) throws CodeGenerationException{
 
 		boolean els = elsePart != null;
 
+		// Generate code for the branch condition.
 		int condRegNum = condition.genCode(func, tab);
 
+		// Create new basic blocks.
 		BasicBlock prevBlock = func.getCurrBlock();
 		BasicBlock thenBlock = new BasicBlock(func);
 		BasicBlock elseBlock = null;
@@ -95,6 +104,7 @@ public class SelectionStatement extends Statement {
 		}
 		BasicBlock postBlock = new BasicBlock(func);
 
+		// Create branch operation.
 		Operation branch = new Operation(Operation.OperationType.BEQ, prevBlock);
 		Operand condReg = new Operand(Operand.OperandType.REGISTER, condRegNum);
 		Operand zilch = new Operand(Operand.OperandType.INTEGER, 0);
@@ -110,30 +120,40 @@ public class SelectionStatement extends Statement {
 		branch.setSrcOperand(2, dest);
 		prevBlock.appendOper(branch);
 
+		// Append then block to main chain.
 		func.appendToCurrentBlock(thenBlock);
 
+		// Set current block to be then block
 		func.setCurrBlock(thenBlock);
 
+		// Generate code for the body of the if-part.
 		body.genCode(func, tab);
 
+		// Append post block to main chain.
 		func.appendToCurrentBlock(postBlock);
 
+		// Handle the else part
 		if (els) {
 
+			// Set current block to be the else block
 			func.setCurrBlock(elseBlock);
 
+			// Generate code for the else part
 			elsePart.genCode(func, tab);
 
+			// Jump to post block.
 			BasicBlock endOfElse = func.getCurrBlock();
 			Operation jump = new Operation(Operation.OperationType.JMP, endOfElse);
 			dest = new Operand(Operand.OperandType.BLOCK, postBlock.getBlockNum());
 			jump.setSrcOperand(0, dest);
 			endOfElse.appendOper(jump);
 
+			// Append else block to unconnected chain.
 			func.appendUnconnectedBlock(elseBlock);
 
 		}
 
+		// Set current block to be the post block.
 		func.setCurrBlock(postBlock);
 
 	}
