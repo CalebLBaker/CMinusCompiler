@@ -45,7 +45,7 @@ public class Program {
 		}
 		CodeItem ret = decl.get(0).genCode();
 		CodeItem curr = ret;
-		for (int i = 0; i < len; i++) {
+		for (int i = 1; i < len; i++) {
 			curr.setNextItem(decl.get(i).genCode());
 			curr = curr.getNextItem();
 		}
