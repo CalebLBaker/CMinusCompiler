@@ -104,7 +104,19 @@ public class BinaryExpression extends Expression {
                 break;
                 case NOT_EQUAL:
                     oper = new Operation(Operation.OperationType.NOT_EQUAL, currBlock);     
-                break;      
+				break;
+				case ADDITION:
+					oper = new Operation(Operation.OperationType.ADD_I, currBlock);     
+				break;
+				case SUBTRACTION:
+					oper = new Operation(Operation.OperationType.SUB_I, currBlock);     
+				break;
+				case MULTIPLICATION:
+					oper = new Operation(Operation.OperationType.MUL_I, currBlock);     
+				break;
+				case DIVISION:
+					oper = new Operation(Operation.OperationType.DIV_I, currBlock);     
+				break;
                 default:
                     throw new CodeGenerationException("Incorrect operator in binary statement");
             }

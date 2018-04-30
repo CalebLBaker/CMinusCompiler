@@ -633,7 +633,7 @@ public class CMinusParser {
 
 		// If looking for a factor and there is a factor
 		// or if the factor was passed as a parameter and there is an operator
-		if ((prime == null && isFactorFirstSet()) || (prime != null && isTermFollowSet())) {
+		if ((prime == null && isFactorFirstSet()) || (prime != null && isFactorFollowSet())) {
 			Expression left = parseTerm(prime);
 			if (isAddop()) {
 				Token.TokenType operator = lex.getNextToken().getTokenType();
