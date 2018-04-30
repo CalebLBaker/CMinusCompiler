@@ -13,6 +13,7 @@
 *
 */
 package parser;
+import lowlevel.Function;
 
 public class SelectionStatement extends Statement {
 
@@ -75,5 +76,9 @@ public class SelectionStatement extends Statement {
 			System.out.println(tab + "else");
 			elsePart.print(newTab);
 		}
+	}
+
+	public void genCode(Function func) {
+		
 	}
 }

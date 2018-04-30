@@ -91,10 +91,10 @@ public class FunctionDeclaration extends Declaration {
         func.appendBlock(new BasicBlock(func));
         statement.genCode(func);
         func.appendBlock(func.getReturnBlock());
-        // BasicBlock unconnected = func.getFirstUnconnectedBlock();
-        // if (unconnected != null) {
-        //     func.appendBlock(unconnected);
-        // }
+        BasicBlock unconnected = func.getFirstUnconnectedBlock();
+        if (unconnected != null) {
+            func.appendBlock(unconnected);
+        }
 
 		return func;
 	}

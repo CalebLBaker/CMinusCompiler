@@ -15,6 +15,7 @@
 package parser;
 import lowlevel.Data;
 import lowlevel.CodeItem;
+import lowlevel.Function;
 
 public class VariableDeclaration extends Declaration {
     private String name;
@@ -54,5 +55,9 @@ public class VariableDeclaration extends Declaration {
 
 	public CodeItem genCode() {
 		return (CodeItem) new Data(Data.TYPE_INT, name);
-	}
+    }
+    
+    public void genCode(Function func) {
+
+    }
 }

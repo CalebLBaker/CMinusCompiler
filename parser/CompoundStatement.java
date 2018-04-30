@@ -67,6 +67,15 @@ public class CompoundStatement extends Statement {
 	}
 
 	public void genCode(Function func) {
-
+		if (decl != null) {
+			for (int i = 0; i < decl.size(); i++) {
+				decl.get(i).genCode(func);
+			}
+		}
+		if (stmt != null) {
+			for (int i = 0; i < stmt.size(); i++) {
+				stmt.get(i).genCode(func);
+			}
+		}
 	}
 }

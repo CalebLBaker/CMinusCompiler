@@ -13,6 +13,7 @@
 *
 */
 package parser;
+import lowlevel.Function;
 
 public class ExpressionStatement extends Statement {
 
@@ -52,5 +53,9 @@ public class ExpressionStatement extends Statement {
 		if (e != null) {
 			e.print(tab + "    ");
 		}
+	}
+
+	public void genCode(Function func) {
+
 	}
 }
