@@ -19,6 +19,8 @@ import lowlevel.Function;
 
 abstract public class Expression {
 
+	int regNum = -1;
+
 	/**
 	 * Prints the node
 	 * @param tab how far to indent the node
