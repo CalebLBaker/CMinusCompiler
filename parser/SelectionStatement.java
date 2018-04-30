@@ -83,7 +83,7 @@ public class SelectionStatement extends Statement {
 
 	public void genCode(Function func, SymbolTable tab) throws CodeGenerationException{
 
-		boolean els = elsePart == null;
+		boolean els = elsePart != null;
 
 		int condRegNum = condition.genCode(func, tab);
 
