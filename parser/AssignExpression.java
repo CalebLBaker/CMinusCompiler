@@ -13,6 +13,7 @@
 *
 */
 package parser;
+import lowlevel.Function;
 
 public class AssignExpression extends Expression {
 
@@ -58,5 +59,9 @@ public class AssignExpression extends Expression {
 		tab += "    ";
 		assignee.print(tab);
 		value.print(tab);
+	}
+
+	public void genCode(Function func) {
+
 	}
 }

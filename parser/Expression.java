@@ -15,6 +15,7 @@
 
 
 package parser;
+import lowlevel.Function;
 
 abstract public class Expression {
 
@@ -23,4 +24,5 @@ abstract public class Expression {
 	 * @param tab how far to indent the node
 	 */
 	abstract public void print(String tab);
+	abstract public void genCode(Function func);
 }

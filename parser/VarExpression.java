@@ -13,6 +13,7 @@
 *
 */
 package parser;
+import lowlevel.Function;
 
 public class VarExpression extends Expression {
 
@@ -72,5 +73,9 @@ public class VarExpression extends Expression {
 			index.print(tab + "    ");
 			System.out.println(tab + "]");
 		}
+	}
+
+	public void genCode(Function func) {
+		
 	}
 }

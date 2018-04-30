@@ -14,6 +14,7 @@
 */
 package parser;
 import scanner.Token;
+import lowlevel.Function;
 
 public class BinaryExpression extends Expression {
 
@@ -71,5 +72,9 @@ public class BinaryExpression extends Expression {
 		tab += "    ";
 		lhs.print(tab);
 		rhs.print(tab);
+	}
+
+	public void genCode(Function func) {
+		
 	}
 }

@@ -15,6 +15,7 @@
 package parser;
 
 import java.util.ArrayList;
+import lowlevel.Function;
 
 public class CallExpression extends Expression {
 
@@ -62,5 +63,9 @@ public class CallExpression extends Expression {
 			p.print(moreTab);
 		}
 		System.out.println(tab + ")");
+	}
+
+	public void genCode(Function func) {
+		
 	}
 }

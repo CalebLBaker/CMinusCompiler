@@ -13,6 +13,7 @@
 *
 */
 package parser;
+import lowlevel.Function;
 
 public class NumExpression extends Expression {
 
@@ -43,5 +44,9 @@ public class NumExpression extends Expression {
 	public void print(String tab) {
 		System.out.print(tab);
 		System.out.println(data);
+	}
+
+	public void genCode(Function func) {
+		
 	}
 }

@@ -56,6 +56,6 @@ public class ExpressionStatement extends Statement {
 	}
 
 	public void genCode(Function func) {
-
+		e.genCode(func);
 	}
 }
