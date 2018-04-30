@@ -99,7 +99,7 @@ public class IterationStatement extends Statement {
 		iterBranch.setSrcOperand(0, condReg);
 		iterBranch.setSrcOperand(1, zilch);
 		iterBranch.setSrcOperand(2, iterDest);
-		bodyBlock.appendOper(iterBranch);
+		func.getCurrBlock().appendOper(iterBranch);
                 
 		// Append post block to main chain.
 		func.appendToCurrentBlock(postBlock);
