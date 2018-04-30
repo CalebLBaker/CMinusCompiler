@@ -65,15 +65,19 @@ public class ReturnStatement extends Statement {
                 int regNum = ret.genCode(func, tab);
                 Operation assign = new Operation(Operation.OperationType.ASSIGN, currBlock);
                 Operand exprReg = new Operand(Operand.OperandType.REGISTER, regNum);
-                Operand retReg = new Operand(Operand.OperandType.MACRO, "retReg");
+                Operand retReg = new Operand(Operand.OperandType.MACRO, "RetReg");
                 assign.setSrcOperand(0, exprReg);
                 assign.setDestOperand(0, retReg);
                 currBlock.appendOper(assign);
             }
             BasicBlock block = func.getReturnBlock();
             Operation jump = new Operation(Operation.OperationType.JMP, currBlock);
-            Operand retBlock = new Operand(Operand.OperandType.BLOCK, block);
+            Operand retBlock = new Operand(Operand.OperandType.BLOCK, block.getBlockNum());
             jump.setSrcOperand(0, retBlock);
-            currBlock.appendOper(jump);
+			currBlock.appendOper(jump);
+			
+			BasicBlock newBlock = new BasicBlock(func);
+			func.appendToCurrentBlock(newBlock);
+			func.setCurrBlock(newBlock);
 	}
 }
