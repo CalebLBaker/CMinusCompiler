@@ -54,11 +54,21 @@ public class VariableDeclaration extends Declaration {
         }
     }
 
+    /**
+	 * Generates Low-level code for a globlal variable declaration.
+	 * @param tab the symbol table for global scope.
+	 * @return a CodeItem representing the low-level code.
+	 */
 	public CodeItem genCode(SymbolTable tab) {
         tab.insert(name, -1);
 		return (CodeItem) new Data(Data.TYPE_INT, name);
     }
     
+    /**
+	 * Inserts a local variable into a local symbol table.
+     * @param func the function that the variable is delcared in.
+	 * @param tab the symbol table for the current scope.
+	 */
     public void genCode(Function func, SymbolTable tab) {
         int regNum = func.getNewRegNum();
         tab.insert(name, regNum);
