@@ -78,11 +78,24 @@ public class VarExpression extends Expression {
 		}
 	}
 
+	/**
+	 * Generates Low-level code for a variable access
+	 * @param func the function that the variable appears in.
+	 * @param tab the symbol table for the current scope.
+	 * @return the register number for the register containing the variable.
+	 * @throws CodeGenerationException if the variable is undeclared.
+	 */
 	public int genCode(Function func, SymbolTable tab) throws CodeGenerationException{
+
+		// Get register number.
 		Integer regNum = tab.get(name);
+
+		// Throw an exception if the variable is undeclared.
 		if (regNum == null) {
 			throw new CodeGenerationException("Use of undeclared variable: " + name);
 		}
+
+		// Load if the variable comes from global scope.
 		else if (regNum == -1) {
 			BasicBlock currBlock = func.getCurrBlock();
 			Operation ld = new Operation(Operation.OperationType.LOAD_I, currBlock);
@@ -93,6 +106,8 @@ public class VarExpression extends Expression {
 			ld.setDestOperand(0, reg);
 			currBlock.appendOper(ld);
 		}
+
+		// Return regNum
 		return regNum;
 	}
 }
