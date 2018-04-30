@@ -61,7 +61,10 @@ public class ReturnStatement extends Statement {
 
 	public void genCode(Function func, SymbolTable tab) throws CodeGenerationException {
             BasicBlock currBlock = func.getCurrBlock();
+            
+            // if there is a return value for the function
             if (ret != null) {
+                // move return value into retreg
                 int regNum = ret.genCode(func, tab);
                 Operation assign = new Operation(Operation.OperationType.ASSIGN, currBlock);
                 Operand exprReg = new Operand(Operand.OperandType.REGISTER, regNum);
@@ -70,14 +73,15 @@ public class ReturnStatement extends Statement {
                 assign.setDestOperand(0, retReg);
                 currBlock.appendOper(assign);
             }
+            // Generate jump operation to return from function
             BasicBlock block = func.getReturnBlock();
             Operation jump = new Operation(Operation.OperationType.JMP, currBlock);
             Operand retBlock = new Operand(Operand.OperandType.BLOCK, block.getBlockNum());
             jump.setSrcOperand(0, retBlock);
-			currBlock.appendOper(jump);
-			
-			BasicBlock newBlock = new BasicBlock(func);
-			func.appendToCurrentBlock(newBlock);
-			func.setCurrBlock(newBlock);
+            currBlock.appendOper(jump);
+
+            BasicBlock newBlock = new BasicBlock(func);
+            func.appendToCurrentBlock(newBlock);
+            func.setCurrBlock(newBlock);
 	}
 }
