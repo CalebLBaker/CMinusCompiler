@@ -55,6 +55,12 @@ public class ExpressionStatement extends Statement {
 		}
 	}
 
+	/**
+	 * Generates Low-level code for an expression statement.
+	 * @param func the function containing the expression statement.
+	 * @param tab the symbol table for the current scope.
+	 * @throws CodeGenerationException if an undeclared variable is used.
+	 */
 	public void genCode(Function func, SymbolTable tab) throws CodeGenerationException{
 		e.genCode(func, tab);
 	}
