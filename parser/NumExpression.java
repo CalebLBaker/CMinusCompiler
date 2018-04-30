@@ -49,6 +49,14 @@ public class NumExpression extends Expression {
 		System.out.println(data);
 	}
 
+
+	/**
+	 * Generates Low-level code for an integer literal
+	 * @param func the function that the literal appears in.
+	 * @param tab the symbol table for the current scope.
+	 * @return the register number for the register containing the literal.
+	 * @throws CodeGenerationException if an undeclared variable is used.
+	 */
 	public int genCode(Function func, SymbolTable tab) {
 		BasicBlock currBlock = func.getCurrBlock();
 		Operation op = new Operation(Operation.OperationType.ASSIGN, currBlock);
