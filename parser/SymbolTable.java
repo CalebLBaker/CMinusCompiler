@@ -24,14 +24,26 @@ public class SymbolTable {
     private SymbolTable parent;
 
     // Hash map that maps variable names to register numbers.
-    private HashMap<String, Integer> table;
+    private HashMap<String, SymbolValue> table;
+
+    public class SymbolValue {
+        public SymbolValue(Integer l, boolean a) {
+            location = l;
+            isArray = a;
+        }
+        public SymbolValue(Integer l) {
+            this(l, false);
+        }
+        public Integer location;
+        public boolean isArray;
+    }
 
     /** Constructor.
      *  @param p the symbol table of the parent scope.
     */
     public SymbolTable(SymbolTable p) {
         parent = p;
-        table = new HashMap<String, Integer>();
+        table = new HashMap<String, SymbolValue>();
     }
 
     /**
@@ -50,6 +62,22 @@ public class SymbolTable {
     public Integer get(String name) {
         Integer reg = null;
         for (SymbolTable curr = this; curr != null && reg == null; curr = curr.parent) {
+            SymbolValue temp = curr.table.get(name);
+            if (temp != null) {
+                reg = temp.location;   
+            }
+        }
+        return reg;
+    }
+
+    /**
+     * Gets the register number for a variable
+     * @param name the name of the variable that is being looked for.
+     * @return the value stored in the symbol table,
+     */
+    public SymbolValue getValue(String name) {
+        SymbolValue reg = null;
+        for (SymbolTable curr = this; curr != null && reg == null; curr = curr.parent) {
             reg = curr.table.get(name);
         }
         return reg;
@@ -61,6 +89,16 @@ public class SymbolTable {
      * @param regNum the number of the register holding the variable.
      */
     public void insert(String name, Integer regNum) {
-        table.put(name, regNum);
+        table.put(name, new SymbolValue(regNum));
+    }
+
+    /**
+     * Inserts a variable into the symbol table.
+     * @param name the name of the variable being inserted.
+     * @param regNum the number of the register holding the variable.
+     * @param arr a boolean flag saying whether the symbol is an array.
+     */
+    public void insert(String name, Integer regNum, boolean arr) {
+        table.put(name, new SymbolValue(regNum, arr));
     }
 }

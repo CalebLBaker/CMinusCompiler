@@ -51,7 +51,7 @@ public class Parameter {
 	 * @return the low-level code for the parameter.
 	 */
     public FuncParam genCode() {
-        return new FuncParam(Data.TYPE_INT, name, false);
+        return new FuncParam(Data.TYPE_INT, name, isArray);
     }
 
     public String getName() {

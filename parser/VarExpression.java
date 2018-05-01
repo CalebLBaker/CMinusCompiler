@@ -96,7 +96,7 @@ public class VarExpression extends Expression {
 		}
 
 		// Load if the variable comes from global scope.
-		else if (regNum == -1) {
+		else if (index == null && regNum == -1) {
 			BasicBlock currBlock = func.getCurrBlock();
 			Operation ld = new Operation(Operation.OperationType.LOAD_I, currBlock);
 			regNum = func.getNewRegNum();
@@ -105,6 +105,41 @@ public class VarExpression extends Expression {
 			ld.setSrcOperand(0, globVar);
 			ld.setDestOperand(0, reg);
 			currBlock.appendOper(ld);
+		}
+
+		// Array
+		else if (index != null) {
+
+			// Set up the load instruction a bit.
+			BasicBlock currBlock = func.getCurrBlock();
+			Operation ld = new Operation(Operation.OperationType.LOAD_I, currBlock);
+			int newReg = func.getNewRegNum();
+			Operand reg = new Operand(Operand.OperandType.REGISTER, newReg);
+			ld.setDestOperand(0, reg);
+
+			// Get the index into the array.
+			int indexReg = index.genCode(func, tab);
+			Operand indReg = new Operand(Operand.OperandType.REGISTER, indexReg);
+
+			// Global array.
+			if (regNum == -1) {
+				Operand arrName = new Operand(Operand.OperandType.STRING, name);
+				ld.setSrcOperand(0, arrName);
+				ld.setSrcOperand(1, indReg);
+			}
+
+			// Local array.
+			else {
+				Operand stackPointer = new Operand(Operand.OperandType.MACRO, "ESP");
+				Operand arrLoc = new Operand(Operand.OperandType.INTEGER, regNum);
+				ld.setSrcOperand(0, stackPointer);
+				ld.setSrcOperand(1, arrLoc);
+				ld.setSrcOperand(2, indReg);
+			}
+
+			// Append operation to block.
+			currBlock.appendOper(ld);
+			regNum = newReg;
 		}
 
 		// Return regNum

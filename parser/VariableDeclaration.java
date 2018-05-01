@@ -60,8 +60,14 @@ public class VariableDeclaration extends Declaration {
 	 * @return a CodeItem representing the low-level code.
 	 */
 	public CodeItem genCode(SymbolTable tab) {
-        tab.insert(name, -1);
-		return (CodeItem) new Data(Data.TYPE_INT, name);
+        if (index == null) {
+            tab.insert(name, -1);
+            return (CodeItem) new Data(Data.TYPE_INT, name);
+        }
+        else {
+            tab.insert(name, -1, true);
+            return (CodeItem) new Data(Data.TYPE_INT, name, true, index);
+        }
     }
     
     /**
@@ -70,7 +76,14 @@ public class VariableDeclaration extends Declaration {
 	 * @param tab the symbol table for the current scope.
 	 */
     public void genCode(Function func, SymbolTable tab) {
-        int regNum = func.getNewRegNum();
-        tab.insert(name, regNum);
+        if (index == null) {
+            int regNum = func.getNewRegNum();
+            tab.insert(name, regNum);
+        }
+        else {
+            int frameSize = func.getFrameSize();
+            func.setFrameSize(frameSize + 4 * index);
+            tab.insert(name, frameSize, true);
+        }
     }
 }

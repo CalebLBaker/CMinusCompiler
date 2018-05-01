@@ -89,9 +89,40 @@ public class AssignExpression extends Expression {
 		// Assignment operation.
 		Operation op;
 
+		Expression index = assignee.getIndex();
+
 		// Throw exception if the variable hasn't been declared in this scope.
 		if (out == null) {
 			throw new CodeGenerationException("Use of undeclared variable: " + varName);
+		}
+
+		// Handle assigning to arrays //////////////////////
+		else if (index != null) {
+
+			// Set up the store instruction a bit.
+			op = new Operation(Operation.OperationType.STORE_I, currBlock);
+
+			// Get the index into the array.
+			int indexReg = index.genCode(func, tab);
+			Operand indReg = new Operand(Operand.OperandType.REGISTER, indexReg);
+
+			// Global array.
+			if (out == -1) {
+				Operand arrName = new Operand(Operand.OperandType.STRING, varName);
+				op.setSrcOperand(1, arrName);
+				op.setSrcOperand(2, indReg);
+			}
+
+			// Local array.
+			else {
+				Operand stackPointer = new Operand(Operand.OperandType.MACRO, "ESP");
+				Operand arrLoc = new Operand(Operand.OperandType.INTEGER, out);
+				op.setSrcOperand(1, stackPointer);
+				op.setSrcOperand(2, arrLoc);
+				op.setSrcOperand(3, indReg);
+			}
+
+			out = in;
 		}
 
 		// If variable is global use a store instead of an assign.
