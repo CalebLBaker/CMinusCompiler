@@ -92,8 +92,9 @@ public class IterationStatement extends Statement {
 		// Generate code for the body
 		body.genCode(func, tab);
                 
-                // Create branch operation.
-                condRegNum = condition.genCode(func, tab);
+        // Create branch operation.
+		condRegNum = condition.genCode(func, tab);
+		condReg = new Operand(Operand.OperandType.REGISTER, condRegNum);
 		Operation iterBranch = new Operation(Operation.OperationType.BNE, bodyBlock);
                 Operand iterDest = new Operand(Operand.OperandType.BLOCK, bodyBlock.getBlockNum());
 

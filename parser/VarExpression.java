@@ -121,11 +121,19 @@ public class VarExpression extends Expression {
 			int indexReg = index.genCode(func, tab);
 			Operand indReg = new Operand(Operand.OperandType.REGISTER, indexReg);
 
+			Operand offsetReg = new Operand(Operand.OperandType.REGISTER, func.getNewRegNum());
+			Operand four = new Operand(Operand.OperandType.INTEGER, 4);
+			Operation getOffset = new Operation(Operation.OperationType.MUL_I, currBlock);
+			getOffset.setSrcOperand(0, indReg);
+			getOffset.setSrcOperand(1, four);
+			getOffset.setDestOperand(0, offsetReg);
+			currBlock.appendOper(getOffset);
+
 			// Global array.
 			if (regNum == -1) {
 				Operand arrName = new Operand(Operand.OperandType.STRING, name);
 				ld.setSrcOperand(0, arrName);
-				ld.setSrcOperand(1, indReg);
+				ld.setSrcOperand(1, offsetReg);
 			}
 
 			// Local array.
@@ -134,7 +142,7 @@ public class VarExpression extends Expression {
 				Operand arrLoc = new Operand(Operand.OperandType.INTEGER, regNum);
 				ld.setSrcOperand(0, stackPointer);
 				ld.setSrcOperand(1, arrLoc);
-				ld.setSrcOperand(2, indReg);
+				ld.setSrcOperand(2, offsetReg);
 			}
 
 			// Append operation to block.

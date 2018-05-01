@@ -96,7 +96,7 @@ public class AssignExpression extends Expression {
 			throw new CodeGenerationException("Use of undeclared variable: " + varName);
 		}
 
-		// Handle assigning to arrays //////////////////////
+		// Handle assigning to arrays
 		else if (index != null) {
 
 			// Set up the store instruction a bit.
@@ -104,13 +104,22 @@ public class AssignExpression extends Expression {
 
 			// Get the index into the array.
 			int indexReg = index.genCode(func, tab);
+
 			Operand indReg = new Operand(Operand.OperandType.REGISTER, indexReg);
+
+			Operand offsetReg = new Operand(Operand.OperandType.REGISTER, func.getNewRegNum());
+			Operand four = new Operand(Operand.OperandType.INTEGER, 4);
+			Operation getOffset = new Operation(Operation.OperationType.MUL_I, currBlock);
+			getOffset.setSrcOperand(0, indReg);
+			getOffset.setSrcOperand(1, four);
+			getOffset.setDestOperand(0, offsetReg);
+			currBlock.appendOper(getOffset);
 
 			// Global array.
 			if (out == -1) {
 				Operand arrName = new Operand(Operand.OperandType.STRING, varName);
 				op.setSrcOperand(1, arrName);
-				op.setSrcOperand(2, indReg);
+				op.setSrcOperand(2, offsetReg);
 			}
 
 			// Local array.
@@ -119,7 +128,7 @@ public class AssignExpression extends Expression {
 				Operand arrLoc = new Operand(Operand.OperandType.INTEGER, out);
 				op.setSrcOperand(1, stackPointer);
 				op.setSrcOperand(2, arrLoc);
-				op.setSrcOperand(3, indReg);
+				op.setSrcOperand(3, offsetReg);
 			}
 
 			out = in;
